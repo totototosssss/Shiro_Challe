@@ -254,13 +254,13 @@
                 </div>
             </main>
 
-            <section id="quiz-result-area" class="quiz-result-display-area" style="display:none;"> {/* クラス名、IDを変更 */}
-                <div class="quiz-result-card"> {/* クラス名を変更 */}
+            <section id="quiz-result-area" class="quiz-result-display-area" style="display:none;"> 
+                <div class="quiz-result-card"> 
                     <h2 class="quiz-result-card-title">Quiz Result!</h2>
                     <div id="quiz-result-icon-container" class="quiz-result-icon-container">
                     </div>
                     <p id="quiz-result-rank-title" class="quiz-result-rank-title"></p>
-                    <div class="quiz-final-score-display"> {/* クラス名を変更 */}
+                    <div class="quiz-final-score-display"> 
                         <span class="quiz-final-score-label">FINAL SCORE</span>
                         <span id="quiz-final-score-value" class="quiz-final-score-value">0</span>
                         <span class="quiz-total-questions-label">/ 
@@ -268,20 +268,14 @@
                         </span>
                     </div>
                     <p id="quiz-result-message" class="quiz-result-message"></p>
-                    {/* クイズモーダルを閉じるボタンか、育成ゲームに戻るボタンをここに配置 */}
+
                     <button id="quiz-finish-button" class="button-primary quiz-action-button">
                         育成に戻る
                     </button>
                 </div>
             </section>
-            {/* ご提示の canvas-confetti はここに配置しない方が良いかもしれません。
-                 JS側で必要に応じて body 直下に追加・削除する方がモーダルの z-index との兼ね合いで制御しやすいです。
-                 <canvas id="quiz-confetti-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index: 10;"></canvas> 
-                 上記のようにモーダル内に配置するか、JSで動的に生成します。
-            */}
         </div>
     </div>
-    {/* --- クイズモーダルここまで --- */}
 
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
