@@ -20,15 +20,156 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     let gameState = {};
 
-    const ITEMS = {
-        'energy_drink_law': { name: 'エナジードリンク', price: 600, type: 'consumable_active', description: '使用: 体力+25、集中力+18。ただしストレス+8。', use: (gs, lh) => { gs.energy += 25; lh.add(`体力${formatChange(25)}。`); gs.focus += 18; lh.add(`集中力${formatChange(18)}。`); gs.stress += 8; lh.add(`代償としてストレスが${formatChange(8, "negative")}。`); return true; }},
-        'omikuji': { name: '開運おみくじ', price: 150, type: 'consumable_active', description: '今日の運勢を占う。1日1回限定。', use: (gs, lh) => { if (gs.omikujiUsedToday) { lh.add("おみくじは本日既に引いています。"); showThought("今日はもう引いた…",1800,'neutral'); return false; } gs.omikujiUsedToday = true; const r=Math.random()*100; let rt="",lc=0,mc=0,sm="",st='neutral'; if(r<5){rt="【大吉】";lc=getRandomInt(30,45);mc=getRandomInt(10,20);sm="やったー！ツイてる！";st='success';} else if(r<20){rt="【中吉】";lc=getRandomInt(10,18);mc=getRandomInt(5,10);sm="おお、中吉！";st='success';} else if(r<50){rt="【小吉】";lc=getRandomInt(3,7);mc=getRandomInt(1,3);sm="小吉か。";st='neutral';} else if(r<75){rt="【吉】";lc=getRandomInt(1,2);mc=0;sm="吉。平穏が一番。";st='neutral';} else if(r<85){rt="【末吉】";lc=0;mc=getRandomInt(-2,0);sm="末吉…微妙。";st='neutral';} else if(r<95){rt="【凶】";lc=getRandomInt(-7,-3);mc=getRandomInt(-8,-4);sm="うわっ、凶だ…。";st='failure';} else{rt="【大凶】";lc=getRandomInt(-10,-8);mc=getRandomInt(-10,-8);sm="まさかの大凶…！";st='failure';} lh.add(`おみくじ結果 ${formatMessage(rt,st)}！`); if(lc!==0){gs.luck+=lc;lh.add(`合格運${formatChange(lc)}`);}else{lh.add(`合格運変化なし`);} if(mc!==0){gs.mental+=mc;lh.add(`精神力${formatChange(mc)}`);}else{lh.add(`精神力変化なし`);} showThought(sm,2300,st); return true; }},
-        'luxury_soapland': { name: '行きつけのソープ', price: 65000, type: 'consumable_active', description: '究極癒やし。ストレス0,集中力MAX。資金も激減。', use: (gs, lh) => { gs.stress=0;lh.add(`ストレス完全消滅！`);gs.focus=100;lh.add(`集中力MAX！`);gs.soaplandUsedCount++;gs.money-=10000;lh.add(`追加料金で資金${formatChange(-10000,"negative")}`);showThought("全て忘れてリフレッシュ！",2500,'success');return true;}},
-        'best_exercise_book':{name:'Sランク過去問集',price:7500,type:'permanent',description:'所有中、演習時の知識獲得+45%,集中力消費-20%。',permanentEffect:{exerciseKnowledgeBoost:0.45,exerciseFocusSave:0.20}},
-        'intensive_lecture_ticket':{name:'短期集中講座受講証',price:3000,type:'consumable_active',description:'使用:知識+15,集中+20,精神+14,ストレス+8。次回勉強/演習効率1.7倍(1日)。',use:(gs,lh)=>{gs.knowledge+=15;lh.add(`法律知識${formatChange(15)}`);gs.focus+=20;lh.add(`集中力${formatChange(20)}`);gs.mental+=14;lh.add(`精神力${formatChange(14)}`);gs.stress+=8;lh.add(`講座負荷ストレス${formatChange(8,"negative")}`);const bt=Math.random()<0.5?'studyTextbookBoost':'studyExerciseBoost';const tn=bt==='studyTextbookBoost'?'基本書':'演習';gs.activeEffects[bt]={duration:2,value:1.7,displayName:`集中講座(${tn})`};lh.add(formatMessage(`集中講座(${tn})効果`,"item")+"を得た！");return true;}},
-        'counseling_ticket':{name:'カウンセリング予約券',price:1800,type:'consumable_active',description:'使用:精神力+35、ストレス-40。専門家は頼りに。',use:(gs,lh)=>{gs.mental+=35;lh.add(`精神力${formatChange(35)}`);gs.stress-=40;lh.add(`ストレス${formatChange(-40)}`);return true;}},
-        'noise_cancelling_earphones':{name:'高級ノイズキャンセリングイヤホン',price:5000,type:'permanent',description:'所有中、勉強時集中力低下-40%。ストレス自然増を微軽減。',permanentEffect:{focusRetentionBoost:0.40,dailyStressResist:1}},
-        'small_lucky_charm':{name:'小さな交通安全お守り',price:1000,type:'permanent',description:'所有中、合格運+10(初期)、毎日運気が少し上がる気が。',permanentEffect:{luck:10,dailyLuckIncrease:2.5}}
+const ITEMS = {
+        'energy_drink_law': { 
+            name: 'エナジードリンク', 
+            price: 600, 
+            type: 'consumable_active', 
+            description: '使用: 体力+25(+α)、集中力+18(+α)。ただしストレス+8。15日モード時効果UP。', 
+            use: (gs, lh) => { 
+                let energyGain = 25;
+                let focusGain = 18;
+                const stressGain = 8;
+                let modeText = "";
+                if (maxDaysGlobal === 15) {
+                    energyGain = Math.round(energyGain * 1.20); // 20%アップ
+                    focusGain = Math.round(focusGain * 1.20);   // 20%アップ
+                    modeText = "(短期集中ブースト) ";
+                }
+                gs.energy += energyGain; 
+                lh.add(`${modeText}体力${formatChange(energyGain)}。`);
+                gs.focus += focusGain; 
+                lh.add(`${modeText}集中力${formatChange(focusGain)}。`);
+                gs.stress += stressGain; 
+                lh.add(`代償としてストレスが${formatChange(stressGain, "negative")}。`);
+                return true; 
+            }
+        },
+        'omikuji': { 
+            name: '開運おみくじ', 
+            price: 150, 
+            type: 'consumable_active', 
+            description: '今日の運勢を占う。1日1回限定。15日モード時少し吉が出やすい？', 
+            use: (gs, lh) => { 
+                if (gs.omikujiUsedToday) { 
+                    lh.add("おみくじは本日既に引いています。"); 
+                    showThought("今日はもう引いた…",1800,'neutral'); 
+                    return false; 
+                } 
+                gs.omikujiUsedToday = true; 
+                let r = Math.random() * 100;
+                if (maxDaysGlobal === 15) { // 15日モードでは少し吉が出やすいように調整
+                    if (r > 60 && r < 95) r -= 10; // 凶や大凶の範囲を少し吉寄りに
+                }
+                let rt="",lc=0,mc=0,sm="",st='neutral'; 
+                if(r<7){rt="【大吉】";lc=getRandomInt(30,45);mc=getRandomInt(10,20);sm="やったー！ツイてる！";st='success';} // 大吉確率少しアップ
+                else if(r<25){rt="【中吉】";lc=getRandomInt(10,18);mc=getRandomInt(5,10);sm="おお、中吉！";st='success';} // 中吉確率少しアップ
+                else if(r<55){rt="【小吉】";lc=getRandomInt(3,7);mc=getRandomInt(1,3);sm="小吉か。";st='neutral';} 
+                else if(r<80){rt="【吉】";lc=getRandomInt(1,2);mc=0;sm="吉。平穏が一番。";st='neutral';} 
+                else if(r<90){rt="【末吉】";lc=0;mc=getRandomInt(-2,0);sm="末吉…微妙。";st='neutral';} 
+                else if(r<97){rt="【凶】";lc=getRandomInt(-7,-3);mc=getRandomInt(-5,-3);sm="うわっ、凶だ…。";st='failure';} // 凶の影響少し緩和
+                else{rt="【大凶】";lc=getRandomInt(-10,-8);mc=getRandomInt(-8,-5);sm="まさかの大凶…！";st='failure';} // 大凶の影響少し緩和
+                lh.add(`おみくじ結果 ${formatMessage(rt,st)}！`); 
+                if(lc!==0){gs.luck+=lc;lh.add(`合格運${formatChange(lc)}`);}else{lh.add(`合格運変化なし`);} 
+                if(mc!==0){gs.mental+=mc;lh.add(`精神力${formatChange(mc)}`);}else{lh.add(`精神力変化なし`);} 
+                showThought(sm,2300,st); return true; 
+            }
+        },
+        'luxury_soapland': { 
+            name: '行きつけのソープ', 
+            price: 65000, 
+            type: 'consumable_active', 
+            description: '究極癒やし。ストレス0,集中力MAX。資金も激減。', 
+            use: (gs, lh) => { 
+                gs.stress=0;lh.add(`ストレス完全消滅！`);
+                gs.focus=100;lh.add(`集中力MAX！`);
+                gs.soaplandUsedCount++;
+                let cost = 10000;
+                if (maxDaysGlobal === 15) cost = 8000; // 15日モードは少しお安く
+                gs.money -= cost;
+                lh.add(`追加料金で資金${formatChange(-cost,"negative")}。`);
+                showThought("全て忘れてリフレッシュ！",2500,'success');return true;
+            }
+        },
+        'best_exercise_book':{
+            name:'Sランク過去問集', price:7500, type:'permanent',
+            description:'所有中、演習時の知識獲得ボーナス、集中力消費軽減。(15日モード時効果UP)',
+            permanentEffectBase: { exerciseKnowledgeBoost: 0.45, exerciseFocusSave: 0.20 }, // 基本効果
+            getPermanentEffect: function() { // maxDaysGlobal を参照して効果を返す関数
+                let effect = {...this.permanentEffectBase};
+                if (maxDaysGlobal === 15) {
+                    effect.exerciseKnowledgeBoost = this.permanentEffectBase.exerciseKnowledgeBoost * 1.15; // 15%増
+                    effect.exerciseFocusSave = this.permanentEffectBase.exerciseFocusSave * 1.15;       // 15%増
+                }
+                return effect;
+            }
+        },
+        'intensive_lecture_ticket':{
+            name:'短期集中講座受講証', price:3000, type:'consumable_active',
+            description:'使用:知識・集中・精神UP、ストレスもUP。次回勉強/演習効率UP。(15日モード時効果UP)',
+            use:(gs,lh)=>{
+                let kGain = 15, fGain = 20, mGain = 14, sGain = 8;
+                let effectMultiplier = 1.7;
+                let modeText = "";
+                if (maxDaysGlobal === 15) {
+                    kGain = Math.round(kGain * 1.2); fGain = Math.round(fGain * 1.2);
+                    mGain = Math.round(mGain * 1.2);
+                    effectMultiplier = 1.9; // ブースト効果もアップ
+                    modeText = "(短期集中ブースト) ";
+                }
+                gs.knowledge+=kGain;lh.add(`${modeText}法律知識${formatChange(kGain)}`);
+                gs.focus+=fGain;lh.add(`${modeText}集中力${formatChange(fGain)}`);
+                gs.mental+=mGain;lh.add(`${modeText}精神力${formatChange(mGain)}`);
+                gs.stress+=sGain;lh.add(`講座負荷ストレス${formatChange(sGain,"negative")}`);
+                const bt=Math.random()<0.5?'studyTextbookBoost':'studyExerciseBoost';
+                const tn=bt==='studyTextbookBoost'?'基本書':'演習';
+                gs.activeEffects[bt]={duration:2,value:effectMultiplier,displayName:`集中講座(${tn})`};
+                lh.add(formatMessage(`集中講座(${tn})効果 (${effectMultiplier}倍)`, "item") + "を得た！");return true;
+            }
+        },
+        'counseling_ticket':{
+            name:'カウンセリング予約券', price:1800, type:'consumable_active',
+            description:'使用:精神力+35(+α)、ストレス-40(-α)。専門家は頼りに。(15日モード時効果UP)',
+            use:(gs,lh)=>{
+                let mentalBoost = 35;
+                let stressRelief = -40;
+                let modeText = "";
+                if (maxDaysGlobal === 15) {
+                    mentalBoost = Math.round(mentalBoost * 1.2);
+                    stressRelief = Math.round(stressRelief * 1.2); // マイナス値なので効果がより大きく
+                    modeText = "(短期集中ケア) ";
+                }
+                gs.mental+=mentalBoost;lh.add(`${modeText}精神力が${formatChange(mentalBoost)}。`);
+                gs.stress+=stressRelief;lh.add(`${modeText}ストレスが${formatChange(stressRelief)}。`); // stressReliefは負の値
+                return true;
+            }
+        },
+        'noise_cancelling_earphones':{
+            name:'高級NCイヤホン', price:5000, type:'permanent',
+            description:'所有中、勉強時集中力低下抑制、ストレス自然増を微軽減。(15日モード時効果UP)',
+            permanentEffectBase: { focusRetentionBoost: 0.40, dailyStressResist: 1 },
+            getPermanentEffect: function() {
+                let effect = {...this.permanentEffectBase};
+                if (maxDaysGlobal === 15) {
+                    effect.focusRetentionBoost = this.permanentEffectBase.focusRetentionBoost * 1.15;
+                    effect.dailyStressResist = this.permanentEffectBase.dailyStressResist + 1; // 固定値アップ
+                }
+                return effect;
+            }
+        },
+        'small_lucky_charm':{
+            name:'小さな交通安全お守り', price:1000, type:'permanent',
+            description:'所有中、合格運ボーナス、毎日運気が少し上がる気が。(15日モード時効果UP)',
+            permanentEffectBase: { luck: 10, dailyLuckIncrease: 2.5 },
+            getPermanentEffect: function() {
+                let effect = {...this.permanentEffectBase};
+                if (maxDaysGlobal === 15) {
+                    effect.luck = Math.round(this.permanentEffectBase.luck * 1.5); // 初期運大幅アップ
+                    effect.dailyLuckIncrease = this.permanentEffectBase.dailyLuckIncrease * 1.2;
+                }
+                return effect;
+            }
+        }
     };
 
 const RANDOM_EVENTS = [
