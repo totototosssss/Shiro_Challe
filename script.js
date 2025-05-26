@@ -515,8 +515,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function initializeGame(selectedDays) {
         maxDaysGlobal = parseInt(selectedDays);
         gameState = JSON.parse(JSON.stringify(INITIAL_STATE_BASE));
-        if (maxDaysGlobal === 15) { gameState.money = 350; gameState.knowledge = 3;} 
-        else { gameState.money = 550; }
+        if (maxDaysGlobal === 15) { gameState.money = 800; gameState.knowledge = 10;} 
+        else { gameState.money = 500; }
         maxDaysDisplayElem.textContent = maxDaysGlobal;
         difficultyScreen.style.display = 'none';
         difficultyScreen.classList.add('hidden');
