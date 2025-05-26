@@ -204,6 +204,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 return true; // アイテム使用成功
             }
         },
+        'ritsumeikan_pamphlet': {
+            name: '立命館大学のパンフレット',
+            price: 300,
+            type: 'consumable_active', 
+            description: '使用: 俺がかつて在学していた大学のパンフレット。過去の栄光に浸り、メンタルが少し回復する。',
+            use: (gs, lh) => {
+                let mentalBoost = 10;
+                let modeText = "";
+
+                if (maxDaysGlobal === 15) {
+                    mentalBoost = Math.round(mentalBoost * 1.5);
+                    modeText = "(あの頃は輝いていた…ブースト) ";
+                }
+
+                gs.mental += mentalBoost;
+                lh.add(`${modeText}パンフレットを眺め、過ぎ去りし日々に思いを馳せた…。随分昔の思い出を今でも語ってしまっているなあ...。メンタルが${formatChange(mentalBoost)}。`);
+                showThought("あの頃に戻れれば…いや、今更だ。", 2500, 'neutral');
+                return true; 
+            }
+        },
         'ambulance_call': {
             name: '救急車',
             price: 0,
