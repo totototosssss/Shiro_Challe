@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         shiroSadImage: 'shiro_sad.png',
         shiroEndedImage: 'shiro_ended.png',
         shiroLungCancerImage: 'shiro_lung_cancer.png',
-        shiroLungCancerImage: 'shiro_soap_end.png.png',
+        shiroSoapEndImage: 'shiro_soap_end.png',
         logMessage: '', 
         inventory: [],
         permanentBuffs: {},
