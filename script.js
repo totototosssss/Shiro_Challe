@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
         quizAttemptedToday: false, 
         cigarettesSmokedCount: 0,
         cigaretteUsageLimit: 0,   
-        ambulanceCallCount: 0  
+        ambulanceCallCount: 0,
+        ritsumeikanPamphletEffectGained: false
     };
     let gameState = {};
 
@@ -140,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         message: "長年の喫煙がたたり、肺はボロボロになっていた。激しい咳と息切れで、もはや勉強どころではない。<br>肺がんを患いしろちゃんを天寿をまっとうした。",
                         shiroImageSrc: gs.shiroLungCancerImage || INITIAL_STATE_BASE.shiroLungCancerImage || gs.shiroSadImage 
                     });
-                    return true; // アイテムは使用され、ゲームオーバー
+                    return true; 
                 }
 
                 gs.cigarettesSmokedCount++;
@@ -253,20 +254,30 @@ document.addEventListener('DOMContentLoaded', () => {
         'ritsumeikan_pamphlet': {
             name: '立命館大学のパンフレット',
             price: 300,
-            type: 'consumable_active', 
+            type: 'consumable_active',
             description: '使用: 俺がかつて在学していた大学のパンフレット。過去の栄光に浸り、メンタルが少し回復する。',
             use: (gs, lh) => {
+                if (gs.ritsumeikanPamphletEffectGained) {
+                    lh.add("再びパンフレットを手に取ったが、もう特別な感情は湧いてこなかった…。");
+                    showThought("あの感動は一度きりだったか…。", 2200, 'neutral');
+                    // アイテムは消費されるが、追加のステータス効果はない
+                    return true; 
+                }
+    
                 let mentalBoost = 10;
                 let modeText = "";
-
+    
                 if (maxDaysGlobal === 15) {
-                    mentalBoost = Math.round(mentalBoost * 1.5);
+                    mentalBoost = Math.round(mentalBoost * 1.5); 
                     modeText = "(あの頃は輝いていた…ブースト) ";
                 }
-
+    
                 gs.mental += mentalBoost;
-                lh.add(`${modeText}パンフレットを眺め、過ぎ去りし日々に思いを馳せた…。随分昔の思い出を今でも語ってしまっているなあ...。メンタルが${formatChange(mentalBoost)}。`);
-                showThought("あの頃に戻れれば…いや、今更だ。", 2500, 'neutral');
+                gs.ritsumeikanPamphletEffectGained = true; // 効果を得たのでフラグを立てる
+    
+                lh.add(`${modeText}パンフレットを眺め、過ぎ去りし日々に思いを馳せた…。随分昔の思い出を今でも語ってしまっているなあ…。メンタルが${formatChange(mentalBoost)}。`);
+                lh.add(formatMessage("このパンフレットによる心の癒しは、もうこれで最後だろう。", "neutral"));
+                showThought("あの頃に戻れれば…いや、今更だ", 2500, 'neutral');
                 return true; 
             }
         },
