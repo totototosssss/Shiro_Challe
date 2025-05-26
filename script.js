@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     let gameState = {};
 
-const ITEMS = {
+    const ITEMS = {
         'energy_drink_law': { 
             name: 'エナジードリンク', 
             price: 600, 
