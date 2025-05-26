@@ -12,8 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" 
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css"> {/* 育成ゲームのメインCSS */}
-    {/* <link rel="stylesheet" href="quiz_style.css">  もしクイズのCSSを別ファイルにする場合 */}
+    <link rel="stylesheet" href="style.css"> 
+
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="shiro_icon.png">
@@ -165,7 +165,6 @@
         </footer>
     </div>
 
-    {/* --- 既存のモーダル (試験結果、アイテムショップ) --- */}
     <div class="modal" id="exam-result-modal">
         <div class="modal-content">
             <button class="modal-close-button" data-modal-id="exam-result-modal">
@@ -210,37 +209,35 @@
             </div>
         </div>
     </div>
-
-    {/* --- ここから新しく追加するクイズモーダル --- */}
+    
     <div class="modal" id="daily-quiz-modal">
         <div class="modal-content quiz-modal-content"> 
-            {/* quiz-modal-contentクラスは、クイズ専用のスタイル調整用に任意で追加 */}
             <button class="modal-close-button" id="close-quiz-modal-button" data-modal-id="daily-quiz-modal">
-                &times; {/* クイズを途中で閉じる場合など */}
+                &times;
             </button>
             
-            {/* 以下、ご提示いただいたクイズゲームのHTML構造を参考に配置 */}
-            <header class="quiz-header-internal"> {/* クラス名を変更してスタイル衝突を避ける */}
+          
+            <header class="quiz-header-internal"> 
                 <h1 class="quiz-game-title"> {/* クラス名を変更 */}
                     誰の発言でしょう
-                    <span class="quiz-game-title-edition">??</span> {/* クラス名を変更 */}
+                    <span class="quiz-game-title-edition">??</span> 
                 </h1>
-                <div class="quiz-header-info-bar"> {/* クラス名を変更 */}
-                    <div class="quiz-progress-info"> {/* クラス名を変更 */}
+                <div class="quiz-header-info-bar"> 
+                    <div class="quiz-progress-info"> 
                         <div id="quiz-progress-text" class="quiz-progress-text">問題 1 / 10</div>
-                        <div class="quiz-progress-bar-container"> {/* クラス名を変更 */}
+                        <div class="quiz-progress-bar-container"> 
                             <div id="quiz-progress-bar" class="quiz-progress-bar"></div>
                         </div>
                     </div>
-                    <div class="quiz-current-score-display"> {/* クラス名を変更 */}
+                    <div class="quiz-current-score-display"> 
                         <i class="fas fa-star quiz-score-icon"></i>score: 
                         <span id="quiz-current-score-value">0</span>
                     </div>
                 </div>
             </header>
 
-            <main id="quiz-main-area" class="quiz-content-internal"> {/* クラス名、IDを変更 */}
-                <div class="quiz-message-display-area"> {/* クラス名を変更 */}
+            <main id="quiz-main-area" class="quiz-content-internal"> 
+                <div class="quiz-message-display-area"> 
                     <div id="quiz-message-text" class="quiz-message-bubble"> {/* クラス名、IDを変更 */}
                         <i class="fas fa-comment-dots quiz-message-quote-icon"></i>
                         <span id="quiz-message-text-content"></span>
