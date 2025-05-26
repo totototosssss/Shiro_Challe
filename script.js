@@ -492,9 +492,9 @@ const RANDOM_EVENTS = [
     let currentQuizSet = [];
     let currentQuizQuestionIndex = 0;
     let currentQuizScore = 0;
-    const QUIZ_TARGET_NUM_QUESTIONS = 5;
+    const QUIZ_TARGET_NUM_QUESTIONS = 3;
     const QUIZ_REWARD_MONEY = 300;
-    const QUIZ_CLEAR_SCORE_THRESHOLD = 3;
+    const QUIZ_CLEAR_SCORE_THRESHOLD = 2;
 
     async function loadQuizData() {
         try {
@@ -577,22 +577,77 @@ const RANDOM_EVENTS = [
     function showQuizResults() {
         quizMainAreaElement.style.display = 'none';
         quizResultAreaElement.style.display = 'block';
-        const totalAns = currentQuizSet.length;
-        quizTotalQuestionsOnResultElement.textContent = totalAns;
+        const totalAnswered = currentQuizSet.length;
+        quizTotalQuestionsOnResultElement.textContent = totalAnswered;
         quizFinalScoreValueElement.textContent = currentQuizScore;
-        let rank = '', title = '', msg = '', icon = '';
-        const cleared = currentQuizScore >= QUIZ_CLEAR_SCORE_THRESHOLD;
-        if (cleared) {
-            rank='b'; title="クイズクリア！"; msg=`おめでとう！${QUIZ_REWARD_MONEY}円獲得！`; icon='fas fa-check-circle';
-            // Reward and log will be handled in finishQuizSession
-            if(typeof confetti==='function')confetti({particleCount:150,spread:90,origin:{y:0.5},scalar:1.2,zIndex:10001});
-        } else {
-            rank='d'; title="残念…"; msg="クリアならず。また明日！"; icon='fas fa-times-circle';
+
+        let rank = '', rankTitle = '', message = '', iconClass = '';
+        let moneyChange = 0;
+        let energyChange = 0;
+        let bonusEffectActive = false;
+
+        if (currentQuizScore === 3) { // 3問正解
+            rank = 's'; rankTitle = "全問正解！天才！"; 
+            moneyChange = 400;
+            energyChange = 10;
+            
+            // 「プラス効果1.2倍」バフを付与 (次の勉強/演習効率UP)
+            const effectKey = 'quizMasteryBonus'; // 効果のキー名
+            const effectDisplayName = 'クイズ全問正解ボーナス';
+            // ランダムで勉強か演習のどちらかの効率を上げる
+            const targetActionBoost = Math.random() < 0.5 ? 'studyTextbookBoost' : 'studyExerciseBoost';
+            gameState.activeEffects[effectKey] = { 
+                duration: 2, // 次の1日有効 (endDayで1減るので実質1日)
+                value: 1.2, 
+                displayName: effectDisplayName,
+                // このキー自体を studyTextbookBoost や studyExerciseBoost と同じように、
+                // calculateChange 関数または各アクション関数で参照できるようにする。
+                // ここでは、特定の行動ブーストキーに効果を上書きまたは追加する形で実装。
+                // 例: gameState.activeEffects[targetActionBoost] = { duration: 2, value: 1.2, displayName: effectDisplayName };
+                // より汎用的な実装として、新しい効果タイプとして追加する
+                type: 'genericLearningBoost', // 例: このタイプを calculateChange で見る
+                boostKey: targetActionBoost // どのブーストに影響するか
+            };
+            bonusEffectActive = true;
+            message = `完璧！${formatChange(moneyChange, "positive")}円と体力${formatChange(energyChange)}、さらに${effectDisplayName}(1.2倍)ゲット！`;
+            iconClass = 'fas fa-crown';
+            if (typeof confetti === 'function') confetti({ particleCount: 200, spread: 120, origin: { y: 0.5 }, scalar: 1.3, zIndex: 10001 });
+        
+        } else if (currentQuizScore === 2) { // 2問正解
+            rank = 'a'; rankTitle = "おしい！あと一歩！";
+            moneyChange = 200;
+            message = `2問正解！${formatChange(moneyChange, "positive")}円獲得！`;
+            iconClass = 'fas fa-thumbs-up';
+            if (typeof confetti === 'function') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, zIndex: 10001 });
+        
+        } else if (currentQuizScore === 1) { // 1問正解
+            rank = 'c'; rankTitle = "うーん…もうやめたら?";
+            // moneyChange は 0 のまま
+            energyChange = -10;
+            message = `1問正解。報酬なし、体力${formatChange(energyChange)}…。`;
+            iconClass = 'fas fa-meh';
+        
+        } else { // 0問正解
+            rank = 'e'; rankTitle = "やる気ないね…";
+            moneyChange = -200;
+            energyChange = -20;
+            message = `まさかの0問正解…。活動資金${formatChange(moneyChange)}、体力${formatChange(energyChange)}…。`;
+            iconClass = 'fas fa-skull-crossbones';
         }
+
+        gameState.money = clamp(gameState.money + moneyChange, 0, Infinity);
+        // 体力の上限は gameState.permanentBuffs.maxEnergyBoost も考慮
+        const maxEnergy = 100 + (gameState.permanentBuffs.maxEnergyBoost || 0);
+        gameState.energy = clamp(gameState.energy + energyChange, 0, maxEnergy);
+
         quizResultIconContainer.className = `quiz-result-icon-container rank-${rank}`;
-        quizResultIconContainer.innerHTML = `<i class="${icon}" style="color:var(--quiz-color-${cleared?'correct':'wrong'});"></i>`;
-        quizResultRankTitleElement.textContent = title;
-        quizResultMessageElement.textContent = msg;
+        let iconColorVar = '--quiz-color-wrong';
+        if (currentQuizScore === 3) iconColorVar = '--quiz-color-correct'; // 全問正解
+        else if (currentQuizScore === 2) iconColorVar = '--quiz-color-accent-primary'; // 2問正解
+        else if (currentQuizScore === 1) iconColorVar = '--quiz-color-accent-secondary'; // 1問正解
+        quizResultIconContainer.innerHTML = `<i class="${iconClass}" style="color: var(${iconColorVar});"></i>`;
+        quizResultRankTitleElement.textContent = rankTitle;
+        quizResultMessageElement.textContent = message;
     }
 
     function startDailyQuizSession() {
@@ -630,17 +685,22 @@ const RANDOM_EVENTS = [
         dailyQuizModal.classList.remove('show');
         gameState.quizAttemptedToday = true;
         
-        LogHelper.add(`--- デイリークイズ ---`);
-        if (currentQuizScore >= QUIZ_CLEAR_SCORE_THRESHOLD) {
-            gameState.money += QUIZ_REWARD_MONEY;
-            LogHelper.add(`クイズクリア！ ${formatMessage("+" + QUIZ_REWARD_MONEY, "positive")}円獲得！`);
-        } else {
-            LogHelper.add(`クイズに挑戦したが、クリアできなかった…。`);
+        LogHelper.add(`--- デイリークイズ結果 ---`);
+        // showQuizResults で gameState は更新されているので、それに基づいてログを生成
+        if (currentQuizScore === 3) {
+            LogHelper.add(`全問正解！${formatChange(400, "positive")}円と体力${formatChange(10)}を獲得！さらに次回学習効率UP！`);
+        } else if (currentQuizScore === 2) {
+            LogHelper.add(`2問正解！${formatChange(200, "positive")}円獲得！`);
+        } else if (currentQuizScore === 1) {
+            LogHelper.add(`1問正解。体力${formatChange(-10)}。`);
+        } else { // 0問正解
+            LogHelper.add(`0問正解…。活動資金${formatChange(-200)}、体力${formatChange(-20)}。`);
         }
+        
         LogHelper.commitCurrentTurnToGameState();
         LogHelper.renderFullLog();
-        updateMainUI(); // Update money and quiz button state
-        enableActions(); // Re-enable main game actions
+        updateMainUI(); 
+        enableActions(); 
     }
 
     function endDay() {
