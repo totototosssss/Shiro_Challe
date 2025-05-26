@@ -2,18 +2,18 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" 
+    <meta name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>しろちゃん育成チャレンジ 予備試験 Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Roboto:wght@400;500;700&display=swap" 
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Roboto:wght@400;500;700&display=swap"
           rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" 
+          rel="stylesheet">
+    <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css"> 
-
+    <link rel="stylesheet" href="style.css">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="shiro_icon.png">
@@ -65,6 +65,9 @@
                         活動資金: <span id="money-display-header-value">500</span>円
                     </span>
                 </div>
+                <button id="open-daily-quiz-button" class="button-icon header-quiz-button" title="デイリークイズ">
+                    <i class="fas fa-puzzle-piece"></i>
+                </button>
                 <button id="open-shop-button" class="button-primary shop-open-button">
                     <i class="fas fa-store"></i> ショップ
                 </button>
@@ -138,10 +141,7 @@
                         <i class="fas fa-briefcase"></i> バイトをする
                     </button>
                     <button data-action="pachinko">
-                        <i class="fas fa-dice-five"></i> パチンコをする
-                    </button>
-                    <button data-action="do_quiz" id="do-quiz-button">
-                        <i class="fas fa-question-circle"></i> クイズに挑戦
+                        <i class="fas fa-slot-machine"></i> パチンコ
                     </button>
                     <button data-action="sleep" class="action-sleep">
                         <i class="fas fa-bed"></i> 翌日のために寝る
@@ -204,20 +204,18 @@
                 現在の活動資金: <span id="shop-money-display">0</span>円
             </p>
             <div id="item-shop-list" class="item-shop-grid">
-                {/* Items will be populated by JavaScript */}
             </div>
         </div>
     </div>
-    
+
     <div class="modal" id="daily-quiz-modal">
         <div class="modal-content quiz-modal-content"> 
             <button class="modal-close-button" id="close-quiz-modal-button" data-modal-id="daily-quiz-modal">
-                &times;
+                &times; 
             </button>
             
-          
             <header class="quiz-header-internal"> 
-                <h1 class="quiz-game-title"> {/* クラス名を変更 */}
+                <h1 class="quiz-game-title"> 
                     誰の発言でしょう
                     <span class="quiz-game-title-edition">??</span> 
                 </h1>
@@ -237,18 +235,16 @@
 
             <main id="quiz-main-area" class="quiz-content-internal"> 
                 <div class="quiz-message-display-area"> 
-                    <div id="quiz-message-text" class="quiz-message-bubble"> {/* クラス名、IDを変更 */}
+                    <div id="quiz-message-text" class="quiz-message-bubble"> 
                         <i class="fas fa-comment-dots quiz-message-quote-icon"></i>
                         <span id="quiz-message-text-content"></span>
                     </div>
                 </div>
                 <div id="quiz-choices-area" class="quiz-choices-container"> 
-                
                 </div>
                 <div class="quiz-feedback-action-area"> 
                     <p id="quiz-feedback-text" class="quiz-feedback-text"></p>
                     <button id="quiz-next-question-btn" class="button-primary quiz-action-button" style="display:none;">
-    
                         次の問題へ <i class="fas fa-arrow-right icon-after"></i>
                     </button>
                 </div>
@@ -268,7 +264,6 @@
                         </span>
                     </div>
                     <p id="quiz-result-message" class="quiz-result-message"></p>
-
                     <button id="quiz-finish-button" class="button-primary quiz-action-button">
                         育成に戻る
                     </button>
@@ -276,7 +271,6 @@
             </section>
         </div>
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="script.js"></script>
