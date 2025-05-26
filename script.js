@@ -17,7 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
         soaplandUsedCount: 0,
         studyActionCount: 0,
         omikujiUsedToday: false,
-        quizAttemptedToday: false
+        quizAttemptedToday: false, 
+        cigarettesSmokedCount: 0,
+        cigaretteUsageLimit: 0,   
+        ambulanceCallCount: 0  
     };
     let gameState = {};
 
@@ -74,6 +77,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(lc!==0){gs.luck+=lc;lh.add(`合格運${formatChange(lc)}`);}else{lh.add(`合格運変化なし`);} 
                 if(mc!==0){gs.mental+=mc;lh.add(`精神力${formatChange(mc)}`);}else{lh.add(`精神力変化なし`);} 
                 showThought(sm,2300,st); return true; 
+            }
+        },
+        'cigarette_pack': {
+            name: 'タバコ (一箱)',
+            price: 600,
+            type: 'consumable_active',
+            description: '一時の安らぎ。使用: ストレス-20、集中力+10。ただし健康を蝕む。吸いすぎると…。',
+            use: (gs, lh) => {
+                if (gs.cigarettesSmokedCount >= gs.cigaretteUsageLimit) {
+                    lh.add(formatMessage("もうこれ以上は体がもたない…それでも、しろちゃんは火をつけた。", "negative"));
+                    LogHelper.commitCurrentTurnToGameState(`--- ${gs.day}日目の行動 ---`);
+                    LogHelper.renderFullLog();
+                    triggerImmediateGameOver({
+                        title: "肺の影-ヤニカスエンド",
+                        message: "長年の喫煙がたたり、肺はボロボロになっていた。激しい咳と息切れで、もはや勉強どころではない。<br>肺がんを患いしろちゃんを天寿をまっとうした。",
+                        shiroImageSrc: gs.shiroSadImage || INITIAL_STATE_BASE.shiroSadImage
+                    });
+                    return true; // アイテムは使用され、ゲームオーバー
+                }
+
+                gs.cigarettesSmokedCount++;
+                const stressRelief = -20;
+                const focusGain = 10;
+                // 15日モードでの効果調整 (任意)
+                // let actualStressRelief = stressRelief;
+                // if (maxDaysGlobal === 15) actualStressRelief = Math.round(stressRelief * 1.1);
+                
+                gs.stress += stressRelief;
+                gs.focus += focusGain;
+
+                lh.add(`タバコを一服…。ストレスが${formatChange(stressRelief)}。集中力が${formatChange(focusGain)}。`);
+                lh.add(formatMessage(`(あと ${gs.cigaretteUsageLimit - gs.cigarettesSmokedCount} 回で限界だ…)`,"warning"));
+                showThought("ふぅ…落ち着くぜ。", 2000, 'neutral');
+                return true;
             }
         },
         'luxury_soapland': { 
@@ -165,6 +202,36 @@ document.addEventListener('DOMContentLoaded', () => {
                     isSuicideEnding: true
                 });
                 return true; // アイテム使用成功
+            }
+        },
+        'ambulance_call': {
+            name: '救急車',
+            price: 0,
+            type: 'consumable_active', 
+            description: 'あまり呼ばない方が良い',
+            use: (gs, lh) => {
+                gs.ambulanceCallCount++;
+                lh.add(`おもむろに電話をかけ、救急車を要請した…。(${gs.ambulanceCallCount}回目)`);
+
+                if (gs.ambulanceCallCount === 1) {
+                    const stressRelief = -30;
+                    const mentalBoost = 20;
+                    gs.stress += stressRelief;
+                    gs.mental += mentalBoost;
+                    lh.add(`駆けつけた隊員は、親身に悩みを聞いてくれた。ストレスが${formatChange(stressRelief)}、精神力が${formatChange(mentalBoost)}。`);
+                    showThought("少し…楽になったかも。", 2200, 'success');
+                    return true;
+                } else {
+                    lh.add(formatMessage("「また君か！」隊員は呆れ顔だ。度重なる要請は虚偽通報とみなされた！", "negative"));
+                    LogHelper.commitCurrentTurnToGameState(`--- ${gs.day}日目の行動 ---`);
+                    LogHelper.renderFullLog();
+                    triggerImmediateGameOver({
+                        title: "虚偽通報で逮捕",
+                        message: "度重なる不適切な救急要請は、悪質な虚偽通報とみなされた。<br>しろちゃんは警察に引き渡され、逮捕されてしまった…。予備試験の道は完全に閉ざされた。",
+                        shiroImageSrc: gs.shiroSadImage || INITIAL_STATE_BASE.shiroSadImage
+                    });
+                    return true;
+                }
             }
         }
     };
@@ -865,6 +932,15 @@ const RANDOM_EVENTS = [
         gameState.mental -= getRandomInt(0, 2);
         gameState.energy -= getRandomInt(0, 2);
         gameState.focus -= getRandomInt(0, 2);
+
+        if (gameState.cigarettesSmokedCount > 0) {
+            const addictionPenalty = gameState.cigarettesSmokedCount * 1; // 1本あたり各-1 (合計-2*本数)
+            gameState.energy = clamp(gameState.energy - addictionPenalty, 0, 100 + (gameState.permanentBuffs.maxEnergyBoost || 0));
+            gameState.focus = clamp(gameState.focus - addictionPenalty, 0, 100);
+            LogHelper.addRaw(formatMessage(`タバコの中毒症状で体力と集中力が低下した(${formatChange(-addictionPenalty)} لكل منهما)。<br>`, "negative"));
+        }
+
+        
         LogHelper.commitCurrentTurnToGameState(`<br><br>--- ${gameState.day-1}日目の終わりに ---`);
         if (gameState.day > maxDaysGlobal) {
             triggerExam();
@@ -902,32 +978,22 @@ const RANDOM_EVENTS = [
     }
 
     function triggerImmediateGameOver(details) {
-        disableActions(); // 全ての行動ボタンを無効化
+        disableActions();
         
-        // 試験結果モーダルを再利用してゲームオーバー画面を表示
+  
         examResultModal.classList.add('show');
-        
-        // モーダル内の表示をクリア・設定
+
         examResultTitle.textContent = details.title || "ゲームオーバー";
-        examResultTitle.style.color = 'var(--color-danger)'; // 通常は赤文字
+        examResultTitle.style.color = 'var(--color-danger)'; 
         
         examShiroImageElem.src = details.shiroImageSrc || INITIAL_STATE_BASE.shiroSadImage;
         
         examResultMesssage.innerHTML = details.message || "何かが起こり、物語はここで終わった…。";
-        
-        // 試験関連の表示は隠す
+
         examCalcMsg.style.display = 'none';
-        fictionEndingElem.style.display = 'none'; // フィクションエンディング部分は非表示
+        fictionEndingElem.style.display = 'none'; 
         
-        examActualResult.style.display = 'block'; // 結果メッセージ部分を表示
-        
-        // 通常の試験終了ではないことを示すために、一部UIを調整（任意）
-        // 例えば、restartGameButton のテキストを変えるなど
-        // restartGameButton.textContent = "最初からやり直す";
-        
-        // gameState.day はこの関数内では更新しない (アイテム使用時に即終了のため)
-        // 必要であれば、グローバルなゲーム終了フラグなどを立てる
-        // actionButtonsCurrentlyDisabled は disableActions で true になっている
+        examActualResult.style.display = 'block'; 
     }
 
     let actionButtonsCurrentlyDisabled = false;
@@ -976,6 +1042,7 @@ const RANDOM_EVENTS = [
         gameState = JSON.parse(JSON.stringify(INITIAL_STATE_BASE));
         if (maxDaysGlobal === 15) { gameState.money = 800; gameState.knowledge = 10;} 
         else { gameState.money = 500; }
+        gameState.cigaretteUsageLimit = Math.floor(maxDaysGlobal / 3);
         maxDaysDisplayElem.textContent = maxDaysGlobal;
         difficultyScreen.style.display = 'none';
         difficultyScreen.classList.add('hidden');
