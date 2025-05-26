@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "真実の言葉", msg: "にゃまに「予備試験なんて夢見すぎ笑」と言われた。もうダメかも…。", effect: (gs) => { gs.mental-=getRandomInt(20,30); gs.stress+=getRandomInt(25,35); gs.focus-=getRandomInt(14,20); gs.knowledge-=getRandomInt(0,1);}},
         { name: "基準点上昇デマ", msg: "SNSで「今年の択一基準点は大幅上昇」というデマを見てしまった…。不安だ。", effect: (gs) => { gs.stress+=getRandomInt(15,25); gs.focus-=getRandomInt(8,14); gs.mental-=getRandomInt(5,10);}}
     ];
-    const RANDOM_EVENT_CHANCE = 0.12;
+    const RANDOM_EVENT_CHANCE = 0.06;
 
     const difficultyScreen = document.getElementById('difficulty-selection-screen');
     const gameContainer = document.querySelector('.game-container');
