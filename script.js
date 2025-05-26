@@ -846,6 +846,35 @@ const RANDOM_EVENTS = [
         },2800);
     }
 
+    function triggerImmediateGameOver(details) {
+        disableActions(); // 全ての行動ボタンを無効化
+        
+        // 試験結果モーダルを再利用してゲームオーバー画面を表示
+        examResultModal.classList.add('show');
+        
+        // モーダル内の表示をクリア・設定
+        examResultTitle.textContent = details.title || "ゲームオーバー";
+        examResultTitle.style.color = 'var(--color-danger)'; // 通常は赤文字
+        
+        examShiroImageElem.src = details.shiroImageSrc || INITIAL_STATE_BASE.shiroSadImage;
+        
+        examResultMesssage.innerHTML = details.message || "何かが起こり、物語はここで終わった…。";
+        
+        // 試験関連の表示は隠す
+        examCalcMsg.style.display = 'none';
+        fictionEndingElem.style.display = 'none'; // フィクションエンディング部分は非表示
+        
+        examActualResult.style.display = 'block'; // 結果メッセージ部分を表示
+        
+        // 通常の試験終了ではないことを示すために、一部UIを調整（任意）
+        // 例えば、restartGameButton のテキストを変えるなど
+        // restartGameButton.textContent = "最初からやり直す";
+        
+        // gameState.day はこの関数内では更新しない (アイテム使用時に即終了のため)
+        // 必要であれば、グローバルなゲーム終了フラグなどを立てる
+        // actionButtonsCurrentlyDisabled は disableActions で true になっている
+    }
+
     let actionButtonsCurrentlyDisabled = false;
     function handleAction(actionType) {
         if (gameState.day > maxDaysGlobal || actionButtonsCurrentlyDisabled) return;
