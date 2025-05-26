@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 LogHelper.renderFullLog();
                 triggerImmediateGameOver({
                     title: "終焉",
-                    message: "目の前が暗くなり、すべての苦しみから解放された…<br>俺にはお似合いかもしれない。",
+                    message: "目の前が暗くなり、すべての苦しみから解放された…<br>どうせ予備試験には受からないし俺にはお似合いだ...。",
                     shiroImageSrc: gs.shiroEndedImage || INITIAL_STATE_BASE.shiroEndedImage,
                     isSuicideEnding: true
                 });
