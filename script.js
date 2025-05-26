@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameState = {};
 
 
+
+    function getRandom(min, max) { return Math.random() * (max - min) + min; }
+    function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
+    
     function calculatePassProbability(currentGameState, currentMaxDays) {
         const gs = currentGameState;
         const internalScoreFull = gs.knowledge * 2.6 + 
@@ -522,10 +527,6 @@ const RANDOM_EVENTS = [
             gameState.logMessage = ""; this.clearCurrentTurnLogs(); this.renderFullLog();
         }
     };
-
-    function getRandom(min, max) { return Math.random() * (max - min) + min; }
-    function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-    function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 
     function showThought(message, duration = 2200, type = 'neutral') {
         shiroThoughtBubble.textContent = message;
