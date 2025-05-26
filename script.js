@@ -575,7 +575,61 @@ const RANDOM_EVENTS = [
     
     
     function work(){LogHelper.add("<strong><i class='fas fa-briefcase'></i> 短期バイトに励んだ。</strong>");if(gameState.energy<40){LogHelper.add(formatMessage("疲労困憊、仕事にならず…。","negative"));showThought("体が重い…",1800,'failure');gameState.money+=getRandomInt(200,500);gameState.energy-=getRandomInt(25,40);}else{let e=calculateChange(getRandom(800,2200),[{p:gameState.focus,v:0.03}]);e=Math.round(e);gameState.money+=e;LogHelper.add(`働いて${formatMessage("+"+e,"positive")}円得た。`);showThought("これで少しは…。",1800,'neutral');}gameState.energy-=Math.round(calculateChange(55,[],[],1,true));gameState.stress+=getRandomInt(10,24);gameState.focus-=getRandomInt(9,18);gameState.mental-=getRandomInt(2,4);}
-    function insultOnline(){gameState.insultOnlineCount++;LogHelper.add("<strong><i class='fas fa-keyboard'></i> オプチャで他人を罵倒。</strong>");const t=["にゃま","なんく","ささみ"][getRandomInt(0,2)];gameState.energy-=getRandomInt(6,14);if(Math.random()<0.8){let sr=getRandom(30,50);gameState.stress-=Math.round(sr);let mb=getRandomInt(6,12);gameState.mental+=mb;let fb=getRandomInt(4,9);gameState.focus+=fb;gameState.luck-=getRandomInt(18,28);LogHelper.add(`${t}を完膚なきまでに言い負かし気分爽快！ストレス${formatChange(-Math.round(sr))}、精神力${formatChange(mb)}、集中力${formatChange(fb)}。`);LogHelper.add(`しかし合格運著しく低下(${formatChange(getRandomInt(-28,-18),"negative")})。`);showThought("一瞬スッキリ！",2000,'success');}else{let si=getRandomInt(20,30);gameState.stress+=si;let md=getRandomInt(25,35);gameState.mental-=md;gameState.luck-=getRandomInt(10,16);gameState.focus-=getRandomInt(12,20);LogHelper.add(`${t}への悪態不発、逆に言い返された…。ストレス${formatChange(si,"negative")}、精神力${formatChange(-md,"negative")}。`);LogHelper.add(`集中力も散漫(${formatChange(getRandomInt(-20,-12),"negative")})、合格運も低下(${formatChange(getRandomInt(-16,-10),"negative")})。`);showThought("最悪だ…疲れた…。",2200,'failure');}}
+    
+
+    function insultOnline() {
+        gameState.insultOnlineCount++;
+        const targets = ["にゃま", "なんく", "ささみ"];
+        const target = targets[getRandomInt(0, targets.length - 1)];
+    
+        LogHelper.add(`<strong><i class='fas fa-keyboard'></i> オプチャで${target}に暴言を吐いた。</strong>`);
+        gameState.energy -= getRandomInt(8, 18);
+    
+        if (Math.random() < 0.7) { 
+            let stressRelief = getRandomInt(25, 45); 
+            gameState.stress -= Math.round(stressRelief);
+            let mentalBoost = getRandomInt(5, 10);
+            gameState.mental += mentalBoost;
+            let focusBoost = getRandomInt(3, 7);
+            gameState.focus += focusBoost;
+            gameState.luck -= getRandomInt(5, 10);
+    
+            LogHelper.add(`${target}を完膚なきまでに言い負かした！気分爽快だ！ストレス${formatChange(-Math.round(stressRelief))}、精神力${formatChange(mentalBoost)}、集中力${formatChange(focusBoost)}。`);
+            LogHelper.add(`しかし、このような行為は合格運を著しく下げるだろう(${formatChange(getRandomInt(-25, -15), "negative")})。`);
+            showThought("論破してやったぜ！…少し心が痛むが。", 2000, 'success');
+        } else {
+            let stressIncrease = getRandomInt(25, 35); 
+            gameState.stress += stressIncrease;
+            let mentalDamage = getRandomInt(20, 30); 
+            gameState.mental -= mentalDamage;
+            gameState.luck -= getRandomInt(8, 14); 
+            gameState.focus -= getRandomInt(10, 18); 
+    
+            LogHelper.add(`${target}への悪態は不発に終わり、逆に言い返されてしまった…。ストレスが${formatChange(stressIncrease,"negative")}、精神力が${formatChange(-mentalDamage,"negative")}。`);
+            LogHelper.add(`集中力も散漫になり(${formatChange(getRandomInt(-18, -10),"negative")})、合格運も下がった(${formatChange(getRandomInt(-14, -8),"negative")})。`);
+            showThought("言い返されてしまった…最悪だ。", 2200, 'failure');
+    
+            // --- 「ささみ」エンディング分岐 ---
+            if (target === "ささみ") {
+                if (Math.random() < 0.5) {
+                    LogHelper.addRaw(`<div class="log-event-highlight"><strong>致命的な挑発:</strong> ${target}を本気で怒らせてしまったようだ…！</div>`);
+                    LogHelper.commitCurrentTurnToGameState(`--- ${gameState.day}日目の行動 ---`);
+                    LogHelper.renderFullLog();
+                    
+                    triggerImmediateGameOver({
+                        title: "ささみの逆襲",
+                        message: "ささみを煽った結果、激怒したささみとその取り巻きによってネット上で全てを晒されてしまった…。<br>社会的な信用は失墜し、予備試験どころではなくなった。",
+                        shiroImageSrc: gameState.shiroSadImage || INITIAL_STATE_BASE.shiroSadImage 
+                    });
+                    return; 
+                } else {
+                     LogHelper.add(`${target}は相当怒っているようだが、今回はなんとか襲撃を免れたようだ…。`);
+                }
+            }
+        }
+    }
+
+    
     function pachinko(){gameState.pachinkoCount++;LogHelper.add("<strong><i class='fas fa-slot-machine'></i> 誘惑に負けパチンコへ…。</strong>");let c=Math.min(gameState.money,Math.max(1000,Math.round(gameState.money*0.20)));if(gameState.money<1000){LogHelper.add(formatMessage("資金1000円未満では遊べない。","negative"));showThought("娯楽は金持ちの道楽か…。",1800,'failure');gameState.stress+=8;}else{gameState.money-=c;LogHelper.add(`${c}円握りしめ一攫千金を夢見た。`);gameState.energy-=Math.round(calculateChange(25,[],[],1,true));let wc=clamp(0.15+(gameState.luck/450)-(gameState.stress/550)+(gameState.mental/650),0.01,0.30);if(Math.random()<wc){const w=Math.round(c*(getRandom(1,6)+getRandom(1,6)));gameState.money+=w;LogHelper.add(`信じられない幸運！${formatMessage("+"+w,"positive")}円獲得！`);gameState.stress-=getRandomInt(15,25);gameState.mental+=getRandomInt(7,13);gameState.luck+=getRandomInt(1,2);showThought("今日だけはツイてる！",1800,'success');}else{LogHelper.add(formatMessage("やはり現実は厳しかった…参加費全損。","negative"));gameState.stress+=getRandomInt(22,32);gameState.mental-=getRandomInt(15,22);gameState.luck-=getRandomInt(3,7);showThought("時間と金の無駄…。",2000,'failure');}}}
     function sleep(){LogHelper.add("<strong><i class='fas fa-bed'></i> 翌日のため質の高い睡眠を。</strong>");let eg=calculateChange(getRandom(38,70),[{p:(100-gameState.stress),v:0.12}],[{p:gameState.stress,v:0.55}]);let sr=calculateChange(getRandom(6,16),[{p:gameState.mental,v:0.45}]);gameState.energy+=Math.round(eg);gameState.stress-=Math.round(sr);LogHelper.add(`体力回復(${formatChange(Math.round(eg))})、ストレス軽減(${formatChange(-Math.round(sr))})。`);let r=getRandomInt(1,5);gameState.focus=Math.max(15,gameState.focus+Math.round(r*0.8));gameState.mental=Math.min(100,gameState.mental+Math.round(r*0.5));showThought("少し回復したか…。",1800,'neutral');}
 
