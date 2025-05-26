@@ -763,10 +763,10 @@ const RANDOM_EVENTS = [
             gameState.mental += mentalBoost;
             let focusBoost = getRandomInt(3, 7);
             gameState.focus += focusBoost;
-            gameState.luck -= getRandomInt(5, 10);
+            gameState.luck -= getRandomInt(1,10);
     
             LogHelper.add(`${target}を完膚なきまでに言い負かした！気分爽快だ！ストレス${formatChange(-Math.round(stressRelief))}、精神力${formatChange(mentalBoost)}、集中力${formatChange(focusBoost)}。`);
-            LogHelper.add(`しかし、このような行為は合格運を著しく下げるだろう(${formatChange(getRandomInt(-25, -15), "negative")})。`);
+            LogHelper.add(`しかし、このような行為は合格運を著しく下げるだろう(${formatChange(getRandomInt(-1, -10), "negative")})。`);
             showThought("論破してやったぜ！…少し心が痛むが。", 2000, 'success');
         } else {
             let stressIncrease = getRandomInt(25, 35); 
@@ -902,17 +902,16 @@ const RANDOM_EVENTS = [
         let energyChange = 0;
         let bonusEffectActive = false;
 
-        if (currentQuizScore === 3) { // 3問正解
+        if (currentQuizScore === 3) { 
             rank = 's'; rankTitle = "全問正解！天才！"; 
             moneyChange = 400;
             energyChange = 10;
             
-            const effectKey = 'quizMasteryBonus'; // 効果のキー名
+            const effectKey = 'quizMasteryBonus'; 
             const effectDisplayName = 'クイズ全問正解ボーナス';
-            // ランダムで勉強か演習のどちらかの効率を上げる
             const targetActionBoost = Math.random() < 0.5 ? 'studyTextbookBoost' : 'studyExerciseBoost';
             gameState.activeEffects[effectKey] = { 
-                duration: 2, // 次の1日有効 (endDayで1減るので実質1日)
+                duration: 2, 
                 value: 1.2, 
                 displayName: effectDisplayName,
 
