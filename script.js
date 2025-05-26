@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         shiroImage: 'shiro.png',
         shiroHappyImage: 'shiro_happy.png',
         shiroSadImage: 'shiro_sad.png',
+        shiroEndedImage: 'shiro_ended.png',
         logMessage: '', 
         inventory: [],
         permanentBuffs: {},
@@ -160,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 triggerImmediateGameOver({
                     title: "終焉",
                     message: "目の前が暗くなり、すべての苦しみから解放された…<br>俺にはお似合いかもしれない。",
-                    shiroImageSrc: gs.shiroSadImage || INITIAL_STATE_BASE.shiroSadImage,
+                    shiroImageSrc: gs.shiroEndedImage || INITIAL_STATE_BASE.shiroEndedImage,
                     isSuicideEnding: true
                 });
                 return true; // アイテム使用成功
