@@ -25,6 +25,46 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     let gameState = {};
 
+
+    function calculatePassProbability(currentGameState, currentMaxDays) {
+        const gs = currentGameState;
+        const internalScoreFull = gs.knowledge * 2.6 + 
+                               gs.mental * 1.2 + 
+                               gs.focus * 1.0 + 
+                               gs.luck * 0.7 - 
+                               gs.stress * 1.5 + 
+                               gs.energy * 0.35;
+        const internalScore = Math.max(0, Math.round(internalScoreFull));
+        const passThreshold = (currentMaxDays === 15 ? 235 : 220);
+        
+        let probability = 0;
+    
+        if (internalScore >= passThreshold) {
+            if (gs.luck > 75 && gs.mental > 80 && internalScore > passThreshold * 1.1) {
+                probability = 0.99; 
+            } else if (internalScore > passThreshold * 1.05 && (gs.luck > 70 || gs.mental > 75)) {
+                probability = 0.60;
+            } else {
+                let pComplex = 0.20 + 
+                               Math.max(0, (gs.knowledge - 70)) / 100 + 
+                               Math.max(0, (gs.luck - 70)) / 150 + 
+                               Math.max(0, (gs.mental - 70)) / 200;
+                probability = clamp(pComplex, 0.01, 0.90); 
+            }
+        } else { 
+            if (internalScore > passThreshold * 0.9 && gs.luck > 85 && gs.mental > 70) {
+                probability = 0.05; 
+            } else if (internalScore > passThreshold * 0.8) {
+                probability = 0.02; 
+            } else {
+                probability = 0.01; 
+            }
+        }
+        return Math.round(clamp(probability, 0, 1) * 100);
+    }
+
+
+    
     const ITEMS = {
         'energy_drink_law': { 
             name: 'エナジードリンク', 
@@ -225,6 +265,48 @@ document.addEventListener('DOMContentLoaded', () => {
                 return true; 
             }
         },
+        'cheap_mock_exam': {
+            name: '格安模試',
+            price: 800,
+            type: 'consumable_active',
+            description: '使用: 現時点での予備試験合格可能性を予測する。少し体力を消費(-5)し、ストレスが微増(+3)する。結果はあくまで目安。',
+            use: (gs, lh) => {
+                const probability = calculatePassProbability(gs, maxDaysGlobal);
+                
+                const energyCost = -5;
+                const stressGain = 3;
+
+                gs.energy = clamp(gs.energy + energyCost, 0, 100 + (gs.permanentBuffs.maxEnergyBoost || 0) );
+                gs.stress = clamp(gs.stress + stressGain, 0, 100);
+
+                lh.add(`格安模試を受けた。体力が${formatChange(energyCost)}、ストレスが${formatChange(stressGain, "negative")}。`);
+                lh.add(`現在の推定合格率は ${formatMessage(probability + "%", probability >= 60 ? "positive" : (probability <= 30 ? "negative" : "neutral"))} と出た。`);
+                
+                let adviceMsg = "";
+                if (probability >= 90) {
+                    adviceMsg = "素晴らしい結果だ！この調子なら合格は目前だろう！";
+                    showThought(`合格可能性 約${probability}%！自信が湧いてきた！`, 3000, 'success');
+                } else if (probability >= 70) {
+                    adviceMsg = "なかなか良い調子だ。油断せず努力を継続しよう。";
+                    showThought(`合格可能性 約${probability}%。悪くない。`, 3000, 'neutral');
+                } else if (probability >= 50) {
+                    adviceMsg = "まだ努力が必要なようだ。気を引き締めて学習に取り組もう。";
+                    showThought(`合格可能性 約${probability}%…まだいけるはずだ。`, 3000, 'neutral');
+                } else if (probability >= 25) {
+                    adviceMsg = "かなり厳しい状況だ…。学習計画や方法を見直す必要があるかもしれない。";
+                    showThought(`合格可能性 約${probability}%…厳しいな。`, 3000, 'failure');
+                } else if(probability >= 5){
+                    adviceMsg = "絶望的な結果だ…。奇跡でも起きない限り、合格は難しいかもしれない。";
+                    showThought(`合格可能性 約${probability}%…もうダメだ…。`, 3000, 'failure');
+                } else{
+                    adviceMsg = "もう終わりだ。俺は無能なんだ。";
+                    showThought(`合格可能性 約${probability}%…死んでやる。毒薬を購入しよう。`, 3000, 'failure');
+                }
+                lh.add(formatMessage(adviceMsg, "neutral"));
+                
+                return true; // アイテム使用成功
+            }
+        }
         'ambulance_call': {
             name: '救急車',
             price: 0,
