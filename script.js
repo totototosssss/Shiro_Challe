@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const stressGain = 8;
                 let modeText = "";
                 if (maxDaysGlobal === 15) {
-                    energyGain = Math.round(energyGain * 1.20); // 20%アップ
-                    focusGain = Math.round(focusGain * 1.20);   // 20%アップ
+                    energyGain = Math.round(energyGain * 1.20); 
+                    focusGain = Math.round(focusGain * 1.20);  
                     modeText = "(短期集中ブースト) ";
                 }
                 gs.energy += energyGain; 
@@ -58,17 +58,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 } 
                 gs.omikujiUsedToday = true; 
                 let r = Math.random() * 100;
-                if (maxDaysGlobal === 15) { // 15日モードでは少し吉が出やすいように調整
-                    if (r > 60 && r < 95) r -= 10; // 凶や大凶の範囲を少し吉寄りに
+                if (maxDaysGlobal === 15) { 
+                    if (r > 60 && r < 95) r -= 10;
                 }
                 let rt="",lc=0,mc=0,sm="",st='neutral'; 
-                if(r<7){rt="【大吉】";lc=getRandomInt(30,45);mc=getRandomInt(10,20);sm="やったー！ツイてる！";st='success';} // 大吉確率少しアップ
-                else if(r<25){rt="【中吉】";lc=getRandomInt(10,18);mc=getRandomInt(5,10);sm="おお、中吉！";st='success';} // 中吉確率少しアップ
+                if(r<7){rt="【大吉】";lc=getRandomInt(30,45);mc=getRandomInt(10,20);sm="やったー！ツイてる！";st='success';}
+                else if(r<25){rt="【中吉】";lc=getRandomInt(10,18);mc=getRandomInt(5,10);sm="おお、中吉！";st='success';}
                 else if(r<55){rt="【小吉】";lc=getRandomInt(3,7);mc=getRandomInt(1,3);sm="小吉か。";st='neutral';} 
                 else if(r<80){rt="【吉】";lc=getRandomInt(1,2);mc=0;sm="吉。平穏が一番。";st='neutral';} 
                 else if(r<90){rt="【末吉】";lc=0;mc=getRandomInt(-2,0);sm="末吉…微妙。";st='neutral';} 
-                else if(r<97){rt="【凶】";lc=getRandomInt(-7,-3);mc=getRandomInt(-5,-3);sm="うわっ、凶だ…。";st='failure';} // 凶の影響少し緩和
-                else{rt="【大凶】";lc=getRandomInt(-10,-8);mc=getRandomInt(-8,-5);sm="まさかの大凶…！";st='failure';} // 大凶の影響少し緩和
+                else if(r<97){rt="【凶】";lc=getRandomInt(-7,-3);mc=getRandomInt(-5,-3);sm="うわっ、凶だ…。";st='failure';}
+                else{rt="【大凶】";lc=getRandomInt(-10,-8);mc=getRandomInt(-8,-5);sm="まさかの大凶…！";st='failure';} 
                 lh.add(`おみくじ結果 ${formatMessage(rt,st)}！`); 
                 if(lc!==0){gs.luck+=lc;lh.add(`合格運${formatChange(lc)}`);}else{lh.add(`合格運変化なし`);} 
                 if(mc!==0){gs.mental+=mc;lh.add(`精神力${formatChange(mc)}`);}else{lh.add(`精神力変化なし`);} 
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 gs.focus=100;lh.add(`集中力MAX！`);
                 gs.soaplandUsedCount++;
                 let cost = 10000;
-                if (maxDaysGlobal === 15) cost = 8000; // 15日モードは少しお安く
+                if (maxDaysGlobal === 15) cost = 8000;
                 gs.money -= cost;
                 lh.add(`追加料金で資金${formatChange(-cost,"negative")}。`);
                 showThought("全て忘れてリフレッシュ！",2500,'success');return true;
@@ -94,12 +94,12 @@ document.addEventListener('DOMContentLoaded', () => {
         'best_exercise_book':{
             name:'Sランク過去問集', price:7500, type:'permanent',
             description:'所有中、演習時の知識獲得ボーナス、集中力消費軽減。(15日モード時効果UP)',
-            permanentEffectBase: { exerciseKnowledgeBoost: 0.45, exerciseFocusSave: 0.20 }, // 基本効果
+            permanentEffectBase: { exerciseKnowledgeBoost: 0.45, exerciseFocusSave: 0.20 },
             getPermanentEffect: function() { // maxDaysGlobal を参照して効果を返す関数
                 let effect = {...this.permanentEffectBase};
                 if (maxDaysGlobal === 15) {
-                    effect.exerciseKnowledgeBoost = this.permanentEffectBase.exerciseKnowledgeBoost * 1.15; // 15%増
-                    effect.exerciseFocusSave = this.permanentEffectBase.exerciseFocusSave * 1.15;       // 15%増
+                    effect.exerciseKnowledgeBoost = this.permanentEffectBase.exerciseKnowledgeBoost * 1.15; 
+                    effect.exerciseFocusSave = this.permanentEffectBase.exerciseFocusSave * 1.15;   
                 }
                 return effect;
             }
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (maxDaysGlobal === 15) {
                     kGain = Math.round(kGain * 1.2); fGain = Math.round(fGain * 1.2);
                     mGain = Math.round(mGain * 1.2);
-                    effectMultiplier = 1.9; // ブースト効果もアップ
+                    effectMultiplier = 1.9; 
                     modeText = "(短期集中ブースト) ";
                 }
                 gs.knowledge+=kGain;lh.add(`${modeText}法律知識${formatChange(kGain)}`);
@@ -136,11 +136,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 let modeText = "";
                 if (maxDaysGlobal === 15) {
                     mentalBoost = Math.round(mentalBoost * 1.2);
-                    stressRelief = Math.round(stressRelief * 1.2); // マイナス値なので効果がより大きく
+                    stressRelief = Math.round(stressRelief * 1.2);
                     modeText = "(短期集中ケア) ";
                 }
                 gs.mental+=mentalBoost;lh.add(`${modeText}精神力が${formatChange(mentalBoost)}。`);
-                gs.stress+=stressRelief;lh.add(`${modeText}ストレスが${formatChange(stressRelief)}。`); // stressReliefは負の値
+                gs.stress+=stressRelief;lh.add(`${modeText}ストレスが${formatChange(stressRelief)}。`); 
                 return true;
             }
         },
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let effect = {...this.permanentEffectBase};
                 if (maxDaysGlobal === 15) {
                     effect.focusRetentionBoost = this.permanentEffectBase.focusRetentionBoost * 1.15;
-                    effect.dailyStressResist = this.permanentEffectBase.dailyStressResist + 1; // 固定値アップ
+                    effect.dailyStressResist = this.permanentEffectBase.dailyStressResist + 1; 
                 }
                 return effect;
             }
@@ -160,12 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
         'small_lucky_charm':{
             name:'小さな交通安全お守り', price:1000, type:'permanent',
             description:'所有中、合格運ボーナス、毎日運気が少し上がる気が。(15日モード時効果UP)',
-            permanentEffectBase: { luck: 10, dailyLuckIncrease: 2.5 },
+            permanentEffectBase: { luck: 10, dailyLuckIncrease: 2 },
             getPermanentEffect: function() {
                 let effect = {...this.permanentEffectBase};
                 if (maxDaysGlobal === 15) {
-                    effect.luck = Math.round(this.permanentEffectBase.luck * 1.5); // 初期運大幅アップ
-                    effect.dailyLuckIncrease = this.permanentEffectBase.dailyLuckIncrease * 1.2;
+                    effect.luck = Math.round(this.permanentEffectBase.luck * 1.5); 
+                    effect.dailyLuckIncrease = this.permanentEffectBase.dailyLuckIncrease * 1.5;
                 }
                 return effect;
             }
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const RANDOM_EVENTS = [
         { 
             name: "オプチャ炎上", 
-            msg: "差別的発言が拡散し炎上！精神的にダメージ…", 
+            msg: "障害者差別発言が拡散し炎上！精神的にダメージ…", 
             effect: (gs) => { 
                 gs.knowledge = Math.round(gs.knowledge * 0.8); 
                 gs.stress = Math.min(100, gs.stress + 25);   
@@ -198,8 +198,8 @@ const RANDOM_EVENTS = [
             }
         },
         { 
-            name: "親バレ危機", 
-            msg: "自室で㊙️をしていたら親に見られそうになった…ヒヤリとした。", 
+            name: "親バレ", 
+            msg: "自室で㊙️㊙️をしていたら親に見られそうになった…萎えてしまった。", 
             effect: (gs) => { 
                 gs.stress = Math.min(100, gs.stress + 30);   
                 gs.energy = Math.round(gs.energy * 0.85);    
@@ -209,7 +209,7 @@ const RANDOM_EVENTS = [
         },
         { 
             name: "将来心配", 
-            msg: "親から「将来どうするの？」と心配された…少し気分が重い。", 
+            msg: "親から「28歳にもなって将来どうするの？」と心配された…少し気分が重い。", 
             effect: (gs) => { 
                 gs.stress = Math.min(100, gs.stress + 20);    
                 gs.mental = Math.max(0, gs.mental - 15);    
@@ -218,17 +218,17 @@ const RANDOM_EVENTS = [
         },
         { 
             name: "体調不良", 
-            msg: "原因不明の体調不良。少しだけだが影響がありそうだ…。", 
+            msg: "原因不明の体調不良。男の子の日に違いない。", 
             effect: (gs) => { 
                 gs.energy = Math.max(10, gs.energy - 30);     
                 gs.focus = Math.max(10, gs.focus - 20);       
                 gs.stress = Math.min(100, gs.stress + 15);     
-                gs.activeEffects['bad_condition'] = { duration:3, displayName:'体調不良(軽度)', value:0.5 }; // 効果値を少し緩和
+                gs.activeEffects['bad_condition'] = { duration:3, displayName:'体調不良(軽度)', value:0.5 }; 
             }
         },
         { 
             name: "大谷活躍", 
-            msg: "大谷選手が特大HR！なんだか元気が出た！", 
+            msg: "大谷選手が特大HR！なんだか元気が出た！勉強しなきゃ!", 
             effect: (gs) => { 
                 gs.knowledge = Math.round(gs.knowledge * 1.02); 
                 gs.stress = Math.max(0, gs.stress - 6); 
