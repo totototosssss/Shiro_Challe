@@ -907,7 +907,6 @@ const RANDOM_EVENTS = [
             moneyChange = 400;
             energyChange = 10;
             
-            // 「プラス効果1.2倍」バフを付与 (次の勉強/演習効率UP)
             const effectKey = 'quizMasteryBonus'; // 効果のキー名
             const effectDisplayName = 'クイズ全問正解ボーナス';
             // ランダムで勉強か演習のどちらかの効率を上げる
@@ -916,13 +915,9 @@ const RANDOM_EVENTS = [
                 duration: 2, // 次の1日有効 (endDayで1減るので実質1日)
                 value: 1.2, 
                 displayName: effectDisplayName,
-                // このキー自体を studyTextbookBoost や studyExerciseBoost と同じように、
-                // calculateChange 関数または各アクション関数で参照できるようにする。
-                // ここでは、特定の行動ブーストキーに効果を上書きまたは追加する形で実装。
-                // 例: gameState.activeEffects[targetActionBoost] = { duration: 2, value: 1.2, displayName: effectDisplayName };
-                // より汎用的な実装として、新しい効果タイプとして追加する
-                type: 'genericLearningBoost', // 例: このタイプを calculateChange で見る
-                boostKey: targetActionBoost // どのブーストに影響するか
+
+                type: 'genericLearningBoost', 
+                boostKey: targetActionBoost 
             };
             bonusEffectActive = true;
             message = `完璧！${formatChange(moneyChange, "positive")}円と体力${formatChange(energyChange)}、さらに${effectDisplayName}(1.2倍)ゲット！`;
@@ -936,9 +931,8 @@ const RANDOM_EVENTS = [
             iconClass = 'fas fa-thumbs-up';
             if (typeof confetti === 'function') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, zIndex: 10001 });
         
-        } else if (currentQuizScore === 1) { // 1問正解
+        } else if (currentQuizScore === 1) { 
             rank = 'c'; rankTitle = "うーん…もうやめたら?";
-            // moneyChange は 0 のまま
             energyChange = -10;
             message = `1問正解。報酬なし、体力${formatChange(energyChange)}…。`;
             iconClass = 'fas fa-meh';
@@ -952,7 +946,6 @@ const RANDOM_EVENTS = [
         }
 
         gameState.money = clamp(gameState.money + moneyChange, 0, Infinity);
-        // 体力の上限は gameState.permanentBuffs.maxEnergyBoost も考慮
         const maxEnergy = 100 + (gameState.permanentBuffs.maxEnergyBoost || 0);
         gameState.energy = clamp(gameState.energy + energyChange, 0, maxEnergy);
 
