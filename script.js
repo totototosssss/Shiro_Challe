@@ -146,6 +146,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 return effect;
             }
+        },
+        'poison_self': {
+            name: '毒薬',
+            price: 1500,
+            type: 'consumable_active',
+            description: '使用: 全てを終わらせる。',
+            use: (gs, lh) => {
+                lh.add(`${formatMessage("しろちゃんは毒薬を飲み干した…。", "negative")}`);
+     
+                LogHelper.commitCurrentTurnToGameState(`--- ${gs.day}日目の行動 ---`);
+                LogHelper.renderFullLog();
+                triggerImmediateGameOver({
+                    title: "終焉",
+                    message: "目の前が暗くなり、すべての苦しみから解放された…<br>俺にはお似合いかもしれない。",
+                    shiroImageSrc: gs.shiroSadImage || INITIAL_STATE_BASE.shiroSadImage,
+                    isSuicideEnding: true
+                });
+                return true; // アイテム使用成功
+            }
         }
     };
 
