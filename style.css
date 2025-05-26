@@ -1,12 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Roboto:wght@400;500;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap'); /* クイズ用にPoppinsもインポート */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
 
 :root {
-    /* 育成ゲームの基本変数 */
     --font-primary: 'Roboto', 'M PLUS Rounded 1c', sans-serif;
     --font-accent: 'M PLUS Rounded 1c', sans-serif;
-    --font-ui-quiz: 'Poppins', 'M PLUS Rounded 1c', sans-serif; /* クイズUI用フォント */
+    --font-ui-quiz: 'Poppins', 'M PLUS Rounded 1c', sans-serif;
 
     --color-primary: #3A7BD5; 
     --color-primary-dark: #2a5a9a;
@@ -28,7 +27,7 @@
     --text-light: #6c757d;
     --text-on-primary: #ffffff;
     --text-on-secondary: #ffffff;
-    --text-on-accent-quiz: #ffffff; /* クイズのアクセントカラー上のテキスト */
+    --text-on-accent-quiz: #ffffff;
 
     --bg-main: #f4f7f9; 
     --bg-card: #ffffff;
@@ -36,11 +35,10 @@
     --bg-modal: #ffffff;
     --bg-input: #f8f9fa;
 
-    /* クイズ用に追加した色変数 (元のクイズCSSより) */
     --quiz-color-surface-raised: #ffffff;
     --quiz-color-surface-interactive: #f8f9fa;
-    --quiz-color-accent-primary: #007bff; /* クイズのプライマリアクセント */
-    --quiz-color-accent-secondary: #ffc107; /* クイズのセカンダリアクセント */
+    --quiz-color-accent-primary: #007bff;
+    --quiz-color-accent-secondary: #ffc107;
     --quiz-color-correct: #20c997;  
     --quiz-color-wrong: #fa5252;   
     --quiz-color-border-subtle: #dbe0e6;  
@@ -51,23 +49,22 @@
     --border-radius-sm: 0.25rem;
     --border-radius-md: 0.5rem;
     --border-radius-lg: 0.8rem;
-    --border-radius-xl: 1.25rem; /* クイズモーダル用に大きめの角丸も */
+    --border-radius-xl: 1.25rem;
     --border-radius-pill: 50rem;
 
     --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.03);
     --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.06);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
     --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.1);
-    --shadow-xl: 0 15px 40px rgba(0,0,0,0.1); /* クイズモーダル用 */
-
+    --shadow-xl: 0 15px 40px rgba(0,0,0,0.1);
 
     --transition-fast: 0.15s ease-out;
     --transition-medium: 0.25s ease-out;
     --transition-slow: 0.4s ease-out;
-    --transition-quiz-timing: cubic-bezier(0.4, 0, 0.2, 1); /* クイズ用 */
+    --transition-quiz-timing: cubic-bezier(0.4, 0, 0.2, 1);
 
     --max-width-container: 800px;
-    --spacing-unit: 8px; /* クイズUIでもこの単位を参考に */
+    --spacing-unit: 8px;
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;
     --spacing-md: 1rem;
@@ -89,7 +86,7 @@ html {
 }
 
 body {
-    font-family: var(--font-primary); /* 育成ゲームの基本フォント */
+    font-family: var(--font-primary);
     background-color: var(--bg-main);
     color: var(--text-dark);
     line-height: 1.6;
@@ -97,11 +94,9 @@ body {
     flex-direction: column; 
     justify-content: center; 
     align-items: center;
-    min-height: 100vh; /* 100dvh の方が良ければ変更 */
+    min-height: 100vh;
     padding: var(--spacing-sm);
     position: relative;
-    /* クイズの背景画像はモーダル表示時にのみ適用するか、bodyに薄くかけるか検討。
-       ここではbodyに薄くかけるのではなく、クイズモーダルに適用する方向で進めます。 */
 }
 
 #app-background-gradient {
@@ -120,9 +115,6 @@ body {
     pointer-events: none;
 }
 
-/* --- 育成ゲームの既存スタイル (一部調整・確認) --- */
-
-/* Difficulty Selection Screen */
 #difficulty-selection-screen {
     width: 100%;
     max-width: 600px;
@@ -141,9 +133,8 @@ body {
     opacity: 0;
     transform: scale(0.95);
     pointer-events: none;
-    display: none; /* 完全に非表示にする */
+    display: none;
 }
-/* ... (難易度選択画面の他のスタイルは前回提示通り) ... */
 .difficulty-content { width: 100%; }
 .difficulty-title {
     font-family: var(--font-accent); font-weight: 800; font-size: 2.2em;
@@ -178,7 +169,6 @@ body {
 #select-hard { background: linear-gradient(45deg, var(--color-danger), #c22a38); }
 #select-hard:hover { filter: brightness(1.1); box-shadow: var(--shadow-md); transform: translateY(-2px); }
 
-
 .game-container {
     width: 100%;
     max-width: var(--max-width-container);
@@ -196,21 +186,20 @@ body {
     opacity: 0;
     transform: scale(0.95);
     pointer-events: none;
-    display: none; /* 完全に非表示 */
+    display: none; 
 }
 
-/* ... (育成ゲームのヘッダー、メインコンテンツ、フッターなどのスタイルは前回提示通り) ... */
 .game-header {
     background-color: var(--bg-header); padding: var(--spacing-md);
     border-radius: var(--border-radius-md); box-shadow: var(--shadow-sm);
     margin-bottom: var(--spacing-lg); border: 1px solid var(--border-color-light);
 }
 .header-title-wrapper { text-align: center; margin-bottom: var(--spacing-md); }
-.game-main-title { /* 育成ゲーム内ヘッダータイトルも共通化 */
+.game-main-title {
     font-family: var(--font-accent); font-weight: 800; font-size: 2em;
     color: var(--color-primary); letter-spacing: 0.5px; line-height: 1.2;
 }
-.game-subtitle { /* 育成ゲーム内サブタイトルも共通化 */
+.game-subtitle {
     font-family: var(--font-accent); font-weight: 500; font-size: 0.9em;
     color: var(--text-medium); display: block; margin-top: var(--spacing-xs);
     letter-spacing: 0.2px;
@@ -224,12 +213,13 @@ body {
     display: flex; align-items: center; background-color: var(--bg-main);
     padding: var(--spacing-xs) var(--spacing-sm); border-radius: var(--border-radius-sm);
     border: 1px solid var(--border-color-light);
+    flex-shrink: 0;
 }
 .info-item i { margin-right: var(--spacing-xs); color: var(--color-secondary); }
 .info-item span span { color: var(--text-dark); font-weight: 700; }
 #max-days-display { color: var(--text-dark); font-weight: 700; }
 
-.button-primary { /* 育成ゲーム内の主要ボタン */
+.button-primary {
     padding: var(--spacing-sm) var(--spacing-md); font-family: var(--font-accent);
     font-size: 0.9em; font-weight: 700; color: var(--text-on-primary);
     background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
@@ -239,9 +229,51 @@ body {
 }
 .button-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); filter: brightness(1.1); }
 .button-primary:active { transform: translateY(0); box-shadow: var(--shadow-xs); }
-.button-primary:disabled { background: var(--text-light); cursor: not-allowed; opacity: 0.7; transform: none; box-shadow: none; }
+.button-primary:disabled { background: var(--text-light) !important; color: #888 !important; cursor: not-allowed; opacity: 0.7; transform: none; box-shadow: none; }
 .button-primary i { margin-right: var(--spacing-xs); }
-.shop-open-button { font-size: 0.85em; padding: calc(var(--spacing-sm) * 0.8) calc(var(--spacing-md) * 0.8); }
+
+.shop-open-button { 
+    font-size: 0.85em; 
+    padding: calc(var(--spacing-sm) * 0.9) calc(var(--spacing-md) * 0.9); /* 少し大きく */
+    margin-left: auto; 
+}
+
+.button-icon {
+    background-color: transparent;
+    border: 1px solid var(--border-color-light);
+    color: var(--text-medium);
+    padding: calc(var(--spacing-sm) * 0.8); /* パディング調整 */
+    border-radius: var(--border-radius-md);
+    font-size: 1.1em; /* アイコンサイズ少しアップ */
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    width: auto; 
+    min-width: calc(var(--spacing-unit) * 4.5); /* タップ領域確保 */
+    min-height: calc(var(--spacing-unit) * 4.5);
+}
+.button-icon:hover {
+    background-color: var(--bg-input);
+    border-color: var(--border-color-dark);
+    color: var(--color-primary);
+}
+.button-icon:disabled {
+    color: var(--text-light) !important;
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-color-light) !important;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.header-quiz-button {
+    margin-right: var(--spacing-sm);
+}
+.header-quiz-button i { color: var(--color-accent); }
+.header-quiz-button:hover i { color: var(--color-primary); }
+.header-quiz-button:disabled i { color: var(--text-light) !important; }
+
 
 .event-notification-area {
     background-color: rgba(var(--color-warning-rgb), 0.15); 
@@ -313,11 +345,9 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
 .params p[data-param]:hover { background-color: #e9ecef; transform: translateY(-1px); }
 .params p[data-param] i { margin-right: var(--spacing-sm); color: var(--color-secondary); font-size: 1em; width: 18px; text-align: center; }
 .params p[data-param] span { font-weight: 700; color: var(--text-dark); font-size: 1.1em; margin-left: auto; transition: color 0.2s ease-in-out; }
-/* .param-value-increased / .param-value-decreased はJSでクラス付与、テキスト色アニメーション用 */
 .params p[data-param].param-value-increased span { animation: value-pop-text 0.35s ease-out; color: var(--color-success); }
 .params p[data-param].param-value-decreased span { animation: value-pop-text 0.35s ease-out; color: var(--color-danger); }
-@keyframes value-pop-text { 50% { transform: scale(1.15); } } /* テキスト自体を少し大きくする */
-
+@keyframes value-pop-text { 50% { transform: scale(1.15); } }
 .params p[data-param].flash-positive { border-left: 3px solid var(--color-success) !important; background-color: rgba(40,167,69,0.03) !important; }
 .params p[data-param].flash-negative { border-left: 3px solid var(--color-danger) !important; background-color: rgba(220,53,69,0.03) !important; }
 
@@ -364,6 +394,7 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     border-radius: var(--border-radius-md); cursor: pointer;
     transition: all var(--transition-medium); box-shadow: var(--shadow-xs);
     text-align: left; display: flex; align-items: center;
+    min-height: 50px; /* スマホでのタップしやすさ確保 */
 }
 .action-buttons-grid button i { margin-right: var(--spacing-sm); font-size: 1.1em; width: 20px; text-align: center; color: var(--color-primary); }
 .action-buttons-grid button:hover {
@@ -387,15 +418,6 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     background-color: rgba(var(--color-secondary-rgb), 0.15);
     border-color: rgba(var(--color-secondary-rgb), 0.4);
 }
-/* クイズ挑戦ボタンの個別スタイル（もし必要なら） */
-.action-buttons-grid button[data-action="do_quiz"] {
-    /* 例: 少し目立たせるなら */
-    /* background-color: rgba(var(--color-accent-rgb), 0.08); */
-    /* border-color: rgba(var(--color-accent-rgb), 0.2); */
-    /* color: #c07000; */
-}
-/* .action-buttons-grid button[data-action="do_quiz"] i { color: var(--color-accent); } */
-
 
 .log-section { min-height: 120px; }
 #log-message-area {
@@ -414,16 +436,15 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
 #log-message .neutral { color: var(--color-warning); font-weight: 500; }
 #log-message .item { color: var(--color-accent); font-style: italic; font-weight: 500; }
 
-.log-event-highlight { /* イベントログの強調 */
+.log-event-highlight {
     background-color: rgba(var(--color-info-rgb), 0.08); 
     border: 1px solid rgba(var(--color-info-rgb), 0.2);
     border-left: 4px solid var(--color-info);
-    padding: var(--spacing-xs) var(--spacing-sm); /* 少しパディングを調整 */
+    padding: var(--spacing-xs) var(--spacing-sm);
     margin: var(--spacing-sm) 0; 
     border-radius: var(--border-radius-sm);
 }
 .log-event-highlight strong { color: var(--color-info); }
-
 
 .game-footer {
     text-align: center; margin-top: var(--spacing-lg);
@@ -431,7 +452,6 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     font-size: 0.75em; color: var(--text-light); opacity: 0.8;
 }
 
-/* --- 既存モーダル (試験結果、ショップ) --- */
 .modal {
     position: fixed; z-index: 1000; left: 0; top: 0;
     width: 100%; height: 100%;
@@ -449,6 +469,8 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     border-radius: var(--border-radius-lg); 
     box-shadow: var(--shadow-lg);
     width: 100%; max-width: 500px; 
+    max-height: 90vh; /* モーダルが画面を超えないように */
+    overflow-y: auto; /* 内容が多い場合はスクロール */
     text-align: center; position: relative;
     transform: translateY(-25px) scale(0.95);
     transition: transform var(--transition-slow) cubic-bezier(0.175, 0.885, 0.32, 1.275), 
@@ -462,6 +484,7 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     background: none; border: none; cursor: pointer;
     line-height: 1; padding: var(--spacing-xs);
     transition: color var(--transition-fast), transform var(--transition-fast);
+    z-index: 10;
 }
 .modal-close-button:hover { color: var(--color-danger); transform: rotate(90deg) scale(1.1); }
 .modal-content h2 {
@@ -501,31 +524,25 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
 .item-card p { font-size:.8em; color:var(--text-medium); margin-bottom:var(--spacing-sm); flex-grow:1; min-height:3em; }
 .item-card .item-price { font-weight:700; color:var(--color-secondary); margin-bottom:var(--spacing-sm); font-size:.95em; }
 .item-card .item-price i { margin-right:var(--spacing-xs); }
-.item-card .buy-item-button { width:100%; margin-top:auto; background:var(--color-accent); } /* Uses .button-primary styles but with accent bg */
+.item-card .buy-item-button { width:100%; margin-top:auto; background:var(--color-accent); }
 .item-card .buy-item-button:hover { background: #e68a00; }
 .item-card .buy-item-button:disabled { background:var(--text-light) !important; }
 
-
-/* --- ここからクイズモーダル専用のスタイル --- */
-#daily-quiz-modal .quiz-modal-content { /* クイズモーダル専用のサイズ調整など */
-    max-width: 700px; /* クイズ用に少し幅広に */
-    padding: var(--spacing-md); /* パディングを少し抑えめにする場合 */
-    /* クイズの背景画像など、必要であればここに設定 */
-    /* background-image: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.92)), url('back.png'); */
-    /* background-size: cover; */
+#daily-quiz-modal .quiz-modal-content {
+    max-width: 700px;
+    padding: var(--spacing-md);
 }
-
-#daily-quiz-modal .quiz-header-internal { /* モーダル内のクイズヘッダー */
+#daily-quiz-modal .quiz-header-internal {
     padding: var(--spacing-md) var(--spacing-md) var(--spacing-sm);
     text-align: center;
     border-bottom: 1px solid var(--quiz-color-border-subtle);
     position: relative; 
 }
 #daily-quiz-modal .quiz-game-title {
-    font-family: var(--font-ui-quiz); /* クイズ専用フォント */
-    font-size: clamp(1.5rem, 4vw, 1.8rem); /* 少し小さめに調整 */
+    font-family: var(--font-ui-quiz);
+    font-size: clamp(1.5rem, 4vw, 1.8rem);
     font-weight: 700; 
-    color: var(--quiz-color-accent-primary); /* クイズのアクセントカラー */
+    color: var(--quiz-color-accent-primary);
     margin-bottom: var(--spacing-xs);
     line-height: 1.2;
     display: flex; 
@@ -543,7 +560,6 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     margin-left: calc(var(--spacing-unit) * 0.5);
     font-size: 0.9em;
 }
-
 #daily-quiz-modal .quiz-header-info-bar {
     display: flex;
     justify-content: space-between;
@@ -557,7 +573,7 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--text-medium);
-    background-color: var(--bg-input); /* 育成ゲームの背景色を流用 */
+    background-color: var(--bg-input);
     padding: calc(var(--spacing-unit) * 0.5) var(--spacing-unit);
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-xs);
@@ -585,14 +601,13 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     border-radius: var(--border-radius-pill); 
     transition: width var(--transition-duration-normal) var(--transition-quiz-timing); 
 }
-
-#daily-quiz-modal .quiz-content-internal { /* モーダル内のクイズメインエリア */
-    padding: var(--spacing-md) var(--spacing-sm); /* 少しパディング調整 */
+#daily-quiz-modal .quiz-content-internal {
+    padding: var(--spacing-md) var(--spacing-sm);
     flex-grow: 1;
 }
 #daily-quiz-modal .quiz-message-display-area { margin-bottom: var(--spacing-md); }
 #daily-quiz-modal .quiz-message-bubble { 
-    background: var(--quiz-color-surface-interactive); /* 少し色を変える */
+    background: var(--quiz-color-surface-interactive); 
     color: var(--text-dark); 
     padding: var(--spacing-md) var(--spacing-lg); 
     border-radius: var(--border-radius-lg); 
@@ -610,10 +625,9 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
 #daily-quiz-modal #quiz-message-text-content { 
     flex-grow: 1; font-weight: 600; color: var(--text-dark); 
 }
-
 #daily-quiz-modal .quiz-choices-container { 
     display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 選択肢ボタンの幅調整 */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: var(--spacing-sm); 
     margin-bottom: var(--spacing-md); 
 }
@@ -621,7 +635,7 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     background-color: var(--quiz-color-surface-raised); 
     color: var(--text-dark); 
     border: 1px solid var(--quiz-color-border-interactive); 
-    padding: var(--spacing-md); /* パディングを少し増やす */
+    padding: var(--spacing-md);
     border-radius: var(--border-radius-md); 
     font-size: clamp(0.8rem, 2.5vw, 0.9rem); 
     font-weight: 600; font-family: var(--font-ui-quiz); cursor: pointer; 
@@ -655,7 +669,6 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     color: var(--quiz-color-correct); 
     background-color: #e6f9ee; 
 }
-
 #daily-quiz-modal .quiz-feedback-action-area { 
     text-align: center; margin-top: var(--spacing-md); min-height: 70px; 
 }
@@ -675,8 +688,7 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
   20%, 60% { transform: translateX(-3px) translateY(0); }
   40%, 80% { transform: translateX(3px) translateY(0); }
 }
-
-#daily-quiz-modal .quiz-action-button { /* クイズモーダル内の主要ボタン */
+#daily-quiz-modal .quiz-action-button {
     background: var(--quiz-color-accent-primary); 
     color: var(--text-on-accent-quiz); 
     font-family: var(--font-ui-quiz); 
@@ -695,8 +707,6 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     transform: translateY(-2px); 
 }
 #daily-quiz-modal .quiz-action-button .icon-after { margin-left: var(--spacing-xs); }
-
-
 #daily-quiz-modal .quiz-result-display-area { 
     text-align: center; 
     padding: var(--spacing-lg) var(--spacing-md); 
@@ -710,7 +720,6 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     animation: quizResultCardAppear 0.6s var(--transition-quiz-timing) 0.1s forwards; 
 }
 @keyframes quizResultCardAppear { to { opacity: 1; transform: translateY(0) scale(1); } }
-
 #daily-quiz-modal .quiz-result-card-title { 
     font-family: var(--font-ui-quiz); 
     font-size: clamp(1rem, 2.5vw, 1.2rem); 
@@ -726,7 +735,6 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     transform: rotateY(180deg) scale(0.6); 
     animation: quizIconFlipIn var(--transition-duration-normal) var(--transition-quiz-timing) forwards; 
 }
-/* アイコンの色はJSでクラス付与によって変わる想定 (元のCSSの .rank-s など) */
 #daily-quiz-modal .quiz-result-icon-container.rank-splus i,
 #daily-quiz-modal .quiz-result-icon-container.rank-s i { color: #ffc107; animation-delay: 0.4s; }
 #daily-quiz-modal .quiz-result-icon-container.rank-aplus i { color: var(--quiz-color-accent-primary); animation-delay: 0.4s; }
@@ -736,13 +744,10 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
 #daily-quiz-modal .quiz-result-icon-container.rank-c i { color: #17a2b8; animation-delay: 0.4s; }
 #daily-quiz-modal .quiz-result-icon-container.rank-d i,
 #daily-quiz-modal .quiz-result-icon-container.rank-e i { color: var(--text-secondary); animation-delay: 0.4s; }
-
-
 @keyframes quizIconFlipIn { 
     0% { opacity: 0; transform: rotateY(180deg) scale(0.6); } 
     100% { opacity: 1; transform: rotateY(0deg) scale(1); } 
 }
-
 #daily-quiz-modal .quiz-result-rank-title { 
     font-family: var(--font-ui-quiz); 
     font-size: clamp(1.3rem, 3.8vw, 1.7rem); 
@@ -750,11 +755,8 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     color: var(--text-dark); opacity: 0; transform: translateY(12px); 
     animation: quizTextAppear 0.5s var(--transition-quiz-timing) 0.7s forwards; 
 }
-/* ランクタイトルの色もJSでクラス付与 */
 #daily-quiz-modal .quiz-result-rank-title.rank-splus { color: #d35400; }
 #daily-quiz-modal .quiz-result-rank-title.rank-s { color: var(--quiz-color-accent-secondary); }
-
-
 #daily-quiz-modal .quiz-final-score-display { 
     margin-bottom: var(--spacing-md); opacity: 0; transform: translateY(12px); 
     animation: quizTextAppear 0.5s var(--transition-quiz-timing) 0.9s forwards; 
@@ -765,7 +767,7 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     letter-spacing: 0.8px; display: block; margin-bottom: -5px; font-weight: 600; 
 }
 #daily-quiz-modal #quiz-final-score-value { 
-    font-family: var(--font-ui-quiz); /* Poppins for score */
+    font-family: var(--font-ui-quiz);
     font-size: clamp(3rem, 8vw, 4rem); 
     font-weight: 700; color: var(--text-dark); line-height: 1; display: inline-block; 
 }
@@ -775,7 +777,7 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     margin-left: calc(var(--spacing-unit) * 0.5); 
 }
 #daily-quiz-modal .quiz-result-message { 
-    font-size: clamp(0.85rem, 2vw, 0.95rem); 
+    font-size: clamp(0.85rem, 2.2vw, 0.95rem); 
     color: var(--text-medium); line-height: 1.6; 
     min-height: 2.8em; margin-bottom: var(--spacing-lg); 
     padding: 0 var(--spacing-xs); opacity: 0; transform: translateY(12px); 
@@ -783,18 +785,14 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     font-weight: 500; 
 }
 @keyframes quizTextAppear { to { opacity: 1; transform: translateY(0); } }
-
-#daily-quiz-modal #quiz-finish-button { /* クイズ終了ボタン */
+#daily-quiz-modal #quiz-finish-button {
     opacity: 0; transform: translateY(15px); 
     animation: quizButtonAppear 0.5s var(--transition-quiz-timing) 1.4s forwards; 
 }
 @keyframes quizButtonAppear { to { opacity: 1; transform: translateY(0); } }
 
-
-/* --- レスポンシブ調整 (既存のものをベースにクイズモーダルも考慮) --- */
 @media (max-width: 768px) {
     html { font-size: 15px; }
-    /* ... (既存の育成ゲームのレスポンシブスタイル) ... */
     #difficulty-selection-screen { padding:var(--spacing-lg); max-width:95vw; }
     .difficulty-title { font-size:2em; }
     #difficulty-selection-screen h2 { font-size:1.3em; }
@@ -809,23 +807,27 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     .character-image-container { width:120px; height:120px; }
     .params { grid-template-columns:repeat(2, 1fr); }
     .action-buttons-grid { grid-template-columns:1fr; }
-    .action-buttons-grid button { font-size:0.9em; padding:var(--spacing-sm); }
+    .action-buttons-grid button { font-size:1em; padding:var(--spacing-md); min-height: 56px; }
     .modal-content { padding:var(--spacing-md) var(--spacing-lg); max-width:95vw; }
     .modal-content h2 { font-size:1.3em; }
     .result-narrative { font-size:1em !important; min-height:60px; }
+    .header-info-bar { align-items: center; } 
+    .shop-open-button { margin-left: var(--spacing-sm); flex-grow: 0; }
+    .header-quiz-button { margin-right: var(--spacing-sm); }
+    .info-item { padding: var(--spacing-sm); }
 
-    /* クイズモーダルのレスポンシブ */
+
     #daily-quiz-modal .quiz-modal-content { max-width: 95vw; padding: var(--spacing-sm); }
     #daily-quiz-modal .quiz-game-title { font-size: clamp(1.3rem, 3.5vw, 1.6rem); }
-    #daily-quiz-modal .quiz-header-info-bar { flex-direction: column; align-items: stretch; gap: var(--spacing-xs); }
-    #daily-quiz-modal .quiz-current-score-display { text-align: center; }
-    #daily-quiz-modal .quiz-choices-container { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+    #daily-quiz-modal .quiz-header-info-bar { flex-direction: row; align-items: center; gap: var(--spacing-sm); }
+    #daily-quiz-modal .quiz-current-score-display { text-align: right; }
+    #daily-quiz-modal .quiz-choices-container { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+    #daily-quiz-modal .quiz-choices-container button { padding: var(--spacing-md); min-height: 52px;}
 }
 
 @media (max-width: 480px) {
     html { font-size: 14px; }
     body { padding: 2px; }
-    /* ... (既存の育成ゲームのレスポンシブスタイル) ... */
     #difficulty-selection-screen { padding:var(--spacing-md); }
     .difficulty-title { font-size:1.6em; }
     .difficulty-subtitle { font-size:0.8em; }
@@ -834,35 +836,38 @@ section h2 i { margin-right: var(--spacing-sm); font-size: 0.9em; }
     .button-difficulty small { font-size:0.7em; }
     .game-container { border-radius:var(--border-radius-md); }
     .header-info-bar { flex-direction:column; align-items:stretch; }
-    .info-item { width:100%; justify-content:space-between; }
-    .shop-open-button { width:100%; margin-top:var(--spacing-sm); }
+    .info-item { width:100%; justify-content:space-between; padding: var(--spacing-sm); }
+    .shop-open-button { width:100%; margin-top:var(--spacing-sm); margin-left:0; padding: var(--spacing-md); }
+    .header-quiz-button { width: 100%; margin-right: 0; margin-bottom: var(--spacing-sm); padding: var(--spacing-sm); font-size: 1.2em;}
     .game-main-title { font-size:1.5em; }
     .game-subtitle { font-size:0.75em; }
     .character-image-container { width:100px; height:100px; }
     .params { grid-template-columns:1fr; }
-    .params p[data-param] { font-size:0.8em; padding:var(--spacing-sm); }
-    .params p[data-param] span { font-size:1em; }
+    .params p[data-param] { font-size:0.9em; padding:var(--spacing-sm) var(--spacing-md); }
+    .params p[data-param] span { font-size:1.05em; }
     section h2 { font-size:1.15em; }
     .log-section { padding:var(--spacing-sm); }
-    #log-message-area { font-size:0.85em; padding:var(--spacing-sm); max-height:150px; }
+    #log-message-area { font-size:0.85em; padding:var(--spacing-sm); max-height:120px; }
     .modal-content { padding:var(--spacing-sm); }
     .modal-content h2 { font-size:1.2em; }
     .modal-content p { font-size:0.9em; }
     .result-narrative { font-size:0.95em !important; min-height:50px; }
-    #restart-game-button { font-size:0.9em; }
+    #restart-game-button { font-size:0.9em; padding: var(--spacing-sm) var(--spacing-md); }
     .modal-character-image { width:90px; height:90px; }
     #item-shop-list.item-shop-grid { grid-template-columns:1fr; }
     .item-card { padding:var(--spacing-sm); }
     .item-card h4 { font-size:1em; }
     .item-card p { font-size:0.75em; min-height:2.5em; }
+    .action-buttons-grid button { font-size:1em; padding: var(--spacing-md); min-height: 58px; }
 
-    /* クイズモーダルのレスポンシブ (極小画面) */
+
     #daily-quiz-modal .quiz-modal-content { padding: var(--spacing-xs); }
     #daily-quiz-modal .quiz-header-internal { padding: var(--spacing-sm) var(--spacing-xs); }
-    #daily-quiz-modal .quiz-game-title { font-size: clamp(1.1rem, 3vw, 1.3rem); }
-    #daily-quiz-modal .quiz-message-bubble { padding: var(--spacing-sm); font-size: clamp(0.9rem, 2.5vw, 1rem); }
-    #daily-quiz-modal .quiz-choices-container { grid-template-columns: 1fr; } /* 1列に */
-    #daily-quiz-modal .quiz-choices-container button { min-height: 44px; font-size: clamp(0.75rem, 2.2vw, 0.85rem); }
-    #daily-quiz-modal .quiz-result-rank-title { font-size: clamp(1.1rem, 3.5vw, 1.4rem); }
-    #daily-quiz-modal #quiz-final-score-value { font-size: clamp(2.5rem, 7vw, 3.5rem); }
+    #daily-quiz-modal .quiz-game-title { font-size: clamp(1.2rem, 3.2vw, 1.4rem); }
+    #daily-quiz-modal .quiz-message-bubble { padding: var(--spacing-md); font-size: clamp(0.95rem, 2.6vw, 1.05rem); }
+    #daily-quiz-modal .quiz-choices-container { grid-template-columns: 1fr; gap: calc(var(--spacing-unit) * 0.75); }
+    #daily-quiz-modal .quiz-choices-container button { min-height: 50px; font-size: clamp(0.8rem, 2.3vw, 0.9rem); padding: var(--spacing-sm); }
+    #daily-quiz-modal .quiz-result-rank-title { font-size: clamp(1.2rem, 3.6vw, 1.5rem); }
+    #daily-quiz-modal #quiz-final-score-value { font-size: clamp(2.8rem, 7.5vw, 3.8rem); }
+    #daily-quiz-modal .quiz-action-button { padding: var(--spacing-sm) var(--spacing-md); }
 }
