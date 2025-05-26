@@ -956,7 +956,7 @@ const RANDOM_EVENTS = [
         else if (currentQuizScore === 1) iconColorVar = '--quiz-color-accent-secondary'; // 1問正解
         quizResultIconContainer.innerHTML = `<i class="${iconClass}" style="color: var(${iconColorVar});"></i>`;
         quizResultRankTitleElement.textContent = rankTitle;
-        quizResultMessageElement.textContent = message;
+        quizResultMessageElement.innerHTML = message;
     }
 
     function startDailyQuizSession() {
