@@ -31,18 +31,102 @@ document.addEventListener('DOMContentLoaded', () => {
         'small_lucky_charm':{name:'小さな交通安全お守り',price:1000,type:'permanent',description:'所有中、合格運+10(初期)、毎日運気が少し上がる気が。',permanentEffect:{luck:10,dailyLuckIncrease:2.5}}
     };
 
-    const RANDOM_EVENTS = [
-        { name: "オプチャ炎上", msg: "差別的発言が拡散し大炎上！精神大ダメージ…", effect: (gs) => { gs.knowledge=Math.round(gs.knowledge*0.6); gs.stress=Math.min(100,gs.stress+50); gs.energy=Math.round(gs.energy*0.5); gs.focus=Math.round(gs.focus*0.4); gs.mental=Math.round(gs.mental*0.3); gs.luck=Math.max(0,gs.luck-20);}},
-        { name: "にゃま暴言", msg: "突然にゃまが現れ心無い言葉を…心が折れそうだ。", effect: (gs) => { gs.knowledge=Math.round(gs.knowledge*0.4); gs.stress=Math.min(100,gs.stress+40); gs.energy=Math.round(gs.energy*0.4); gs.focus=Math.round(gs.focus*0.35); gs.mental=Math.round(gs.mental*0.4); gs.luck=Math.max(0,gs.luck-15);}},
-        { name: "親バレ危機", msg: "自室で㊙️をしていたら親に目撃された…最悪だ。", effect: (gs) => { gs.stress=Math.min(100,gs.stress+55); gs.energy=Math.round(gs.energy*0.45); gs.focus=Math.round(gs.focus*0.4); gs.mental=Math.round(gs.mental*0.3);}},
-        { name: "将来心配", msg: "親から「28歳にもなって将来どうするの？」と真剣に心配された…気分が重い。", effect: (gs) => { gs.stress=Math.min(100,gs.stress+35); gs.mental=Math.max(0,gs.mental-25); gs.focus=Math.max(0,gs.focus-20);}},
-        { name: "体調不良", msg: "原因不明の体調不良。今日は何もできそうにない…。", effect: (gs) => { gs.energy=Math.max(5,gs.energy-55); gs.focus=Math.max(5,gs.focus-40); gs.stress=Math.min(100,gs.stress+30); gs.activeEffects['bad_condition'] = { duration:3, displayName:'体調不良', value:0.3 };}},
-        { name: "大谷活躍", msg: "大谷選手が特大HR！なんだか元気が出た！", effect: (gs) => { gs.knowledge=Math.round(gs.knowledge*1.02); gs.stress=Math.max(0,gs.stress-6); gs.energy=Math.round(gs.energy*1.05); gs.focus=Math.round(gs.focus*1.05); gs.mental=Math.round(gs.mental*1.05); gs.luck=Math.min(100,gs.luck+7);}},
-        { name: "学者動画発見", msg: "有名学者の予備試験対策動画を偶然発見！役立ちそうだ！", effect: (gs) => { gs.knowledge+=getRandomInt(1,3); gs.focus+=getRandomInt(4,9); gs.stress-=4;}},
-        { name: "真実の言葉", msg: "にゃまに「予備試験なんて夢見すぎ笑」と言われた。もうダメかも…。", effect: (gs) => { gs.mental-=getRandomInt(20,30); gs.stress+=getRandomInt(25,35); gs.focus-=getRandomInt(14,20); gs.knowledge-=getRandomInt(0,1);}},
-        { name: "基準点上昇デマ", msg: "SNSで「今年の択一基準点は大幅上昇」というデマを見てしまった…。不安だ。", effect: (gs) => { gs.stress+=getRandomInt(15,25); gs.focus-=getRandomInt(8,14); gs.mental-=getRandomInt(5,10);}}
+const RANDOM_EVENTS = [
+        { 
+            name: "オプチャ炎上", 
+            msg: "差別的発言が拡散し炎上！精神的にダメージ…", 
+            effect: (gs) => { 
+                gs.knowledge = Math.round(gs.knowledge * 0.8); 
+                gs.stress = Math.min(100, gs.stress + 25);   
+                gs.energy = Math.round(gs.energy * 0.75);   
+                gs.focus = Math.round(gs.focus * 0.7);    
+                gs.mental = Math.round(gs.mental * 0.6);   
+                gs.luck = Math.max(0, gs.luck - 10);      
+            }
+        },
+        { 
+            name: "にゃま暴言", 
+            msg: "突然にゃまが現れ心無い言葉を…少し心が揺らぐ。", 
+            effect: (gs) => { 
+                gs.knowledge = Math.round(gs.knowledge * 0.85); 
+                gs.stress = Math.min(100, gs.stress + 20);    
+                gs.energy = Math.round(gs.energy * 0.8);      
+                gs.focus = Math.round(gs.focus * 0.75);   
+                gs.mental = Math.round(gs.mental * 0.7);    
+                gs.luck = Math.max(0, gs.luck - 8);        
+            }
+        },
+        { 
+            name: "親バレ危機", 
+            msg: "自室で㊙️をしていたら親に見られそうになった…ヒヤリとした。", 
+            effect: (gs) => { 
+                gs.stress = Math.min(100, gs.stress + 30);   
+                gs.energy = Math.round(gs.energy * 0.85);    
+                gs.focus = Math.round(gs.focus * 0.8);     
+                gs.mental = Math.round(gs.mental * 0.75);    
+            }
+        },
+        { 
+            name: "将来心配", 
+            msg: "親から「将来どうするの？」と心配された…少し気分が重い。", 
+            effect: (gs) => { 
+                gs.stress = Math.min(100, gs.stress + 20);    
+                gs.mental = Math.max(0, gs.mental - 15);    
+                gs.focus = Math.max(0, gs.focus - 10);       
+            }
+        },
+        { 
+            name: "体調不良", 
+            msg: "原因不明の体調不良。少しだけだが影響がありそうだ…。", 
+            effect: (gs) => { 
+                gs.energy = Math.max(10, gs.energy - 30);     
+                gs.focus = Math.max(10, gs.focus - 20);       
+                gs.stress = Math.min(100, gs.stress + 15);     
+                gs.activeEffects['bad_condition'] = { duration:3, displayName:'体調不良(軽度)', value:0.5 }; // 効果値を少し緩和
+            }
+        },
+        { 
+            name: "大谷活躍", 
+            msg: "大谷選手が特大HR！なんだか元気が出た！", 
+            effect: (gs) => { 
+                gs.knowledge = Math.round(gs.knowledge * 1.02); 
+                gs.stress = Math.max(0, gs.stress - 6); 
+                gs.energy = Math.round(gs.energy * 1.05); 
+                gs.focus = Math.round(gs.focus * 1.05); 
+                gs.mental = Math.round(gs.mental * 1.05); 
+                gs.luck = Math.min(100, gs.luck + 7);
+            }
+        },
+        { 
+            name: "学者動画発見", 
+            msg: "有名学者の予備試験対策動画を偶然発見！役立ちそうだ！", 
+            effect: (gs) => { 
+                gs.knowledge += getRandomInt(1,3); 
+                gs.focus += getRandomInt(4,9); 
+                gs.stress -= 4;
+            }
+        },
+        { 
+            name: "真実の言葉", 
+            msg: "にゃまに「予備試験なんて夢見すぎ笑」と言われた。少し落ち込む…。", 
+            effect: (gs) => { 
+                gs.mental -= getRandomInt(10, 20);     
+                gs.stress += getRandomInt(15, 25);    
+                gs.focus -= getRandomInt(8, 15);    
+                gs.knowledge -= getRandomInt(0,1);   
+            }
+        },
+        { 
+            name: "基準点上昇デマ", 
+            msg: "SNSで「今年の択一基準点は大幅上昇」というデマを見てしまった…。少し不安だ。", 
+            effect: (gs) => { 
+                gs.stress += getRandomInt(10, 15);  
+                gs.focus -= getRandomInt(5, 10);     
+                gs.mental -= getRandomInt(3, 7);    
+            }
+        }
     ];
-    const RANDOM_EVENT_CHANCE = 0.06;
+    const RANDOM_EVENT_CHANCE = 0.07;
 
     const difficultyScreen = document.getElementById('difficulty-selection-screen');
     const gameContainer = document.querySelector('.game-container');
