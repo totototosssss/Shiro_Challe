@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
         shiroHappyImage: 'shiro_happy.png',
         shiroSadImage: 'shiro_sad.png',
         shiroEndedImage: 'shiro_ended.png',
-        hiroLungCancerImage: 'shiro_lung_cancer.png',
+        shiroLungCancerImage: 'shiro_lung_cancer.png',
+        shiroLungCancerImage: 'shiro_soap_end.png.png',
         logMessage: '', 
         inventory: [],
         permanentBuffs: {},
@@ -1104,7 +1105,8 @@ const RANDOM_EVENTS = [
             examResultTitle.style.color=p?'var(--color-success)':'var(--color-danger)';
             if(p){t="予備試験 合格！";if(s>pt*1.10)msg=`<strong>信じられない！まさに奇跡！超高得点で合格です！</strong><br>絶望的な挑戦を乗り越え、不可能を可能にしました！`;else msg=`<strong>おめでとうございます！血と汗と涙、そして幸運が実り、見事合格です！</strong><br>厳しい道のりの果てに、ついに栄光を掴みました。`;fictionNoticeElem.innerHTML=`―――これはゲームの中の輝かしい未来。<br>現実のしろちゃんは、怠惰な時間を満喫中…！<br>めでたし？`;fictionEndingElem.style.display='block';}
             else{examResultTitle.style.color='var(--color-danger)';const iL=maxDaysGlobal===15?3:5;const pL=maxDaysGlobal===15?3:5;const sE=maxDaysGlobal===15?Math.round(maxDaysGlobal*0.6):Math.round(maxDaysGlobal*0.5);
-                if(gameState.soaplandUsedCount>0){t="不合格…そして絶望の診断";msg=`<strong>予備試験に落ちた上、刹那的な快楽が仇となり体に深刻な異変が…。</strong><br>診断結果は無情にも性病。治療には莫大な費用と時間が…。`;}
+                if(gameState.soaplandUsedCount>0){t="不合格…そして絶望の診断";msg=`<strong>予備試験に落ちた上、刹那的な快楽が仇となり体に深刻な異変が…。</strong><br>診断結果は無情にも性病。治療には莫大な費用と時間が…。`;
+                                                  currentExamImageSrc = gameState.shiroSoapEndImage || INITIAL_STATE_BASE.shiroSoapEndImage || gameState.shiroSadImage;}
                 else if(gameState.insultOnlineCount>=iL){t="不合格…そして逮捕";msg=`<strong>予備試験にも落ち、度重なるネットでの誹謗中傷が仇となった…。</strong><br>「しろちゃん、署まで来てもらおうか」…人生、詰んだ。`;}
                 else if(gameState.pachinkoCount>=pL){t="不合格…そして借金地獄";msg=`<strong>予備試験にも落ち、パチンコで作った借金は雪だるま式に膨れ上がった。</strong><br>取り立ての電話は鳴り止まず、もはやまともな生活は送れない…。しろちゃんは自殺した。`;}
                 else if(gameState.studyActionCount>=sE&&s<pt){t="不合格…努力の果てに";msg=`<strong>予備試験不合格。あれだけ勉強したのに、結果は非情だった…。</strong><br>努力だけでは越えられない壁を痛感し、静かにペンを置いた。`;}
