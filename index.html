@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" 
+          content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>しろちゃん育成チャレンジ 予備試験 Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Roboto:wght@400;500;700&display=swap" 
+          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css"> {/* 育成ゲームのメインCSS */}
+    {/* <link rel="stylesheet" href="quiz_style.css">  もしクイズのCSSを別ファイルにする場合 */}
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="shiro_icon.png">
+</head>
+<body>
+    <div id="app-background-gradient"></div>
+
+    <div id="difficulty-selection-screen">
+        <div class="difficulty-content">
+            <h1 class="game-main-title difficulty-title">
+                しろちゃん育成チャレンジ
+            </h1>
+            <p class="game-subtitle difficulty-subtitle">
+                予備試験 Edition
+            </p>
+            <h2>難易度を選択してください</h2>
+            <div class="difficulty-buttons">
+                <button id="select-easy" class="button-difficulty" data-days="30">
+                    <i class="fas fa-graduation-cap"></i>
+                    30日間 (Easy)
+                    <small>比較的じっくり育成できます</small>
+                </button>
+                <button id="select-hard" class="button-difficulty" data-days="15">
+                    <i class="fas fa-fire"></i>
+                    15日間 (Hard)
+                    <small>短期決戦の厳しい道のりです</small>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-container" style="display: none;">
+        <header class="game-header">
+            <div class="header-title-wrapper">
+                <h1 class="game-main-title">しろちゃん育成チャレンジ</h1>
+                <span class="game-subtitle">予備試験 Edition</span>
+            </div>
+            <div class="header-info-bar">
+                <div class="info-item day-counter">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>
+                        <span id="day-display">1</span>日目 / 
+                        <span id="max-days-display">15</span>日
+                    </span>
+                </div>
+                <div class="info-item money-display">
+                    <i class="fas fa-wallet"></i>
+                    <span>
+                        活動資金: <span id="money-display-header-value">500</span>円
+                    </span>
+                </div>
+                <button id="open-shop-button" class="button-primary shop-open-button">
+                    <i class="fas fa-store"></i> ショップ
+                </button>
+            </div>
+        </header>
+
+        <div class="event-notification-area" id="event-notification" style="display: none;">
+            <p id="event-message"></p>
+        </div>
+
+        <main class="game-main-content">
+            <section class="status-and-character-section">
+                <div class="character-display">
+                    <div class="character-image-container">
+                        <img src="shiro.png" alt="しろちゃん" id="shiro-image">
+                    </div>
+                    <div id="shiro-thought-bubble" class="thought-bubble" style="display: none;">
+                        ...
+                    </div>
+                </div>
+                <div class="status-grid">
+                    <h2><i class="fas fa-chart-line"></i> 現在のステータス</h2>
+                    <div class="params">
+                        <p data-param="knowledge">
+                            <i class="fas fa-book"></i>法律知識: 
+                            <span id="knowledge-display">2</span>
+                        </p>
+                        <p data-param="stress">
+                            <i class="fas fa-ghost"></i>ストレス: 
+                            <span id="stress-display">30</span>
+                        </p>
+                        <p data-param="energy">
+                            <i class="fas fa-bolt"></i>体力: 
+                            <span id="energy-display">45</span>
+                        </p>
+                        <p data-param="focus">
+                            <i class="fas fa-bullseye"></i>集中力: 
+                            <span id="focus-display">10</span>
+                        </p>
+                        <p data-param="mental">
+                            <i class="fas fa-heart-pulse"></i>精神力: 
+                            <span id="mental-display">20</span>
+                        </p>
+                        <p data-param="luck">
+                            <i class="fas fa-dice"></i>合格運: 
+                            <span id="luck-display">3</span>
+                        </p>
+                    </div>
+                    <div class="inventory-display">
+                        <h3><i class="fas fa-box-archive"></i> 所持アイテム</h3>
+                        <ul id="inventory-list">
+                            <li class="no-items">なし</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="actions-section">
+                <h2><i class="fas fa-tasks"></i> 今日の行動</h2>
+                <div class="action-buttons-grid">
+                    <button data-action="study_textbook">
+                        <i class="fas fa-book-open"></i> 基本書を読む
+                    </button>
+                    <button data-action="do_exercise">
+                        <i class="fas fa-pencil-alt"></i> 演習をする
+                    </button>
+                    <button data-action="insult_online">
+                        <i class="fas fa-keyboard"></i> オプチャで暴言
+                    </button>
+                    <button data-action="work">
+                        <i class="fas fa-briefcase"></i> バイトをする
+                    </button>
+                    <button data-action="pachinko">
+                        <i class="fas fa-slot-machine"></i> パチンコ
+                    </button>
+                    {/* --- クイズ挑戦ボタンを追加 --- */}
+                    <button data-action="do_quiz" id="do-quiz-button">
+                        <i class="fas fa-question-circle"></i> クイズに挑戦
+                    </button>
+                    <button data-action="sleep" class="action-sleep">
+                        <i class="fas fa-bed"></i> 翌日のために寝る
+                    </button>
+                </div>
+            </section>
+
+            <section class="log-section">
+                <h2><i class="fas fa-scroll"></i> 行動記録</h2>
+                <div id="log-message-area">
+                    <p id="log-message">
+                        しろちゃんの予備試験への道が始まる…。合格は絶望的だ。
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="game-footer">
+            <p>&copy; 2025 しろちゃん育成チャレンジ 予備試験Edition製作委員会</p>
+        </footer>
+    </div>
+
+    {/* --- 既存のモーダル (試験結果、アイテムショップ) --- */}
+    <div class="modal" id="exam-result-modal">
+        <div class="modal-content">
+            <button class="modal-close-button" data-modal-id="exam-result-modal">
+                &times;
+            </button>
+            <h2 id="exam-result-title">予備試験 結果発表</h2>
+            <div id="exam-shiro-image-container" class="modal-character-image">
+                <img src="shiro.png" alt="運命のしろちゃん" id="exam-shiro-image">
+            </div>
+            <div id="exam-calculation-message" class="loading-indicator" style="display:none;">
+                <p>合否判定中です…</p>
+                <div class="spinner"></div>
+            </div>
+            <div id="exam-actual-result" style="display:none;">
+                <p id="exam-result-message" class="result-narrative"></p>
+                <div id="fiction-ending" style="display:none;">
+                    <hr class="result-divider">
+                    <p class="fiction-title">--- この物語の結末について ---</p>
+                    <p class="fiction-body"></p>
+                    <p class="fiction-disclaimer">
+                        (このゲームはフィクションであり、実在の人物がどうなるかは不明です。)
+                    </p>
+                </div>
+            </div>
+            <button id="restart-game-button" class="button-primary">
+                もう一度挑戦する
+            </button>
+        </div>
+    </div>
+
+    <div class="modal" id="item-shop-modal">
+        <div class="modal-content">
+            <button class="modal-close-button" data-modal-id="item-shop-modal">
+                &times;
+            </button>
+            <h2><i class="fas fa-store-alt"></i> アイテムショップ</h2>
+            <p class="shop-info">
+                現在の活動資金: <span id="shop-money-display">0</span>円
+            </p>
+            <div id="item-shop-list" class="item-shop-grid">
+                {/* Items will be populated by JavaScript */}
+            </div>
+        </div>
+    </div>
+
+    {/* --- ここから新しく追加するクイズモーダル --- */}
+    <div class="modal" id="daily-quiz-modal">
+        <div class="modal-content quiz-modal-content"> 
+            {/* quiz-modal-contentクラスは、クイズ専用のスタイル調整用に任意で追加 */}
+            <button class="modal-close-button" id="close-quiz-modal-button" data-modal-id="daily-quiz-modal">
+                &times; {/* クイズを途中で閉じる場合など */}
+            </button>
+            
+            {/* 以下、ご提示いただいたクイズゲームのHTML構造を参考に配置 */}
+            <header class="quiz-header-internal"> {/* クラス名を変更してスタイル衝突を避ける */}
+                <h1 class="quiz-game-title"> {/* クラス名を変更 */}
+                    誰の発言でしょう
+                    <span class="quiz-game-title-edition">??</span> {/* クラス名を変更 */}
+                </h1>
+                <div class="quiz-header-info-bar"> {/* クラス名を変更 */}
+                    <div class="quiz-progress-info"> {/* クラス名を変更 */}
+                        <div id="quiz-progress-text" class="quiz-progress-text">問題 1 / 10</div>
+                        <div class="quiz-progress-bar-container"> {/* クラス名を変更 */}
+                            <div id="quiz-progress-bar" class="quiz-progress-bar"></div>
+                        </div>
+                    </div>
+                    <div class="quiz-current-score-display"> {/* クラス名を変更 */}
+                        <i class="fas fa-star quiz-score-icon"></i>score: 
+                        <span id="quiz-current-score-value">0</span>
+                    </div>
+                </div>
+            </header>
+
+            <main id="quiz-main-area" class="quiz-content-internal"> {/* クラス名、IDを変更 */}
+                <div class="quiz-message-display-area"> {/* クラス名を変更 */}
+                    <div id="quiz-message-text" class="quiz-message-bubble"> {/* クラス名、IDを変更 */}
+                        <i class="fas fa-comment-dots quiz-message-quote-icon"></i>
+                        <span id="quiz-message-text-content"></span>
+                    </div>
+                </div>
+                <div id="quiz-choices-area" class="quiz-choices-container"> {/* クラス名、IDを変更 */}
+                    {/* 選択肢はJSで生成 */}
+                </div>
+                <div class="quiz-feedback-action-area"> {/* クラス名を変更 */}
+                    <p id="quiz-feedback-text" class="quiz-feedback-text"></p>
+                    <button id="quiz-next-question-btn" class="button-primary quiz-action-button" style="display:none;">
+                        {/* button-primary は育成ゲームのスタイルを流用、quiz-action-button は専用調整用 */}
+                        次の問題へ <i class="fas fa-arrow-right icon-after"></i>
+                    </button>
+                </div>
+            </main>
+
+            <section id="quiz-result-area" class="quiz-result-display-area" style="display:none;"> {/* クラス名、IDを変更 */}
+                <div class="quiz-result-card"> {/* クラス名を変更 */}
+                    <h2 class="quiz-result-card-title">Quiz Result!</h2>
+                    <div id="quiz-result-icon-container" class="quiz-result-icon-container">
+                    </div>
+                    <p id="quiz-result-rank-title" class="quiz-result-rank-title"></p>
+                    <div class="quiz-final-score-display"> {/* クラス名を変更 */}
+                        <span class="quiz-final-score-label">FINAL SCORE</span>
+                        <span id="quiz-final-score-value" class="quiz-final-score-value">0</span>
+                        <span class="quiz-total-questions-label">/ 
+                            <span id="quiz-total-questions-on-result">10</span>
+                        </span>
+                    </div>
+                    <p id="quiz-result-message" class="quiz-result-message"></p>
+                    {/* クイズモーダルを閉じるボタンか、育成ゲームに戻るボタンをここに配置 */}
+                    <button id="quiz-finish-button" class="button-primary quiz-action-button">
+                        育成に戻る
+                    </button>
+                </div>
+            </section>
+            {/* ご提示の canvas-confetti はここに配置しない方が良いかもしれません。
+                 JS側で必要に応じて body 直下に追加・削除する方がモーダルの z-index との兼ね合いで制御しやすいです。
+                 <canvas id="quiz-confetti-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index: 10;"></canvas> 
+                 上記のようにモーダル内に配置するか、JSで動的に生成します。
+            */}
+        </div>
+    </div>
+    {/* --- クイズモーダルここまで --- */}
+
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
