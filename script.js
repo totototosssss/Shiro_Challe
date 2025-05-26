@@ -104,29 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return effect;
             }
         },
-        'intensive_lecture_ticket':{
-            name:'短期集中講座受講証', price:3000, type:'consumable_active',
-            description:'使用:知識・集中・精神UP、ストレスもUP。次回勉強/演習効率UP。(15日モード時効果UP)',
-            use:(gs,lh)=>{
-                let kGain = 15, fGain = 20, mGain = 14, sGain = 8;
-                let effectMultiplier = 1.7;
-                let modeText = "";
-                if (maxDaysGlobal === 15) {
-                    kGain = Math.round(kGain * 1.2); fGain = Math.round(fGain * 1.2);
-                    mGain = Math.round(mGain * 1.2);
-                    effectMultiplier = 1.9; 
-                    modeText = "(短期集中ブースト) ";
-                }
-                gs.knowledge+=kGain;lh.add(`${modeText}法律知識${formatChange(kGain)}`);
-                gs.focus+=fGain;lh.add(`${modeText}集中力${formatChange(fGain)}`);
-                gs.mental+=mGain;lh.add(`${modeText}精神力${formatChange(mGain)}`);
-                gs.stress+=sGain;lh.add(`講座負荷ストレス${formatChange(sGain,"negative")}`);
-                const bt=Math.random()<0.5?'studyTextbookBoost':'studyExerciseBoost';
-                const tn=bt==='studyTextbookBoost'?'基本書':'演習';
-                gs.activeEffects[bt]={duration:2,value:effectMultiplier,displayName:`集中講座(${tn})`};
-                lh.add(formatMessage(`集中講座(${tn})効果 (${effectMultiplier}倍)`, "item") + "を得た！");return true;
-            }
-        },
         'counseling_ticket':{
             name:'カウンセリング予約券', price:1800, type:'consumable_active',
             description:'使用:精神力+35(+α)、ストレス-40(-α)。専門家は頼りに。(15日モード時効果UP)',
@@ -842,7 +819,7 @@ const RANDOM_EVENTS = [
             else{examResultTitle.style.color='var(--color-danger)';const iL=maxDaysGlobal===15?3:5;const pL=maxDaysGlobal===15?3:5;const sE=maxDaysGlobal===15?Math.round(maxDaysGlobal*0.6):Math.round(maxDaysGlobal*0.5);
                 if(gameState.soaplandUsedCount>0){t="不合格…そして絶望の診断";msg=`<strong>予備試験に落ちた上、刹那的な快楽が仇となり体に深刻な異変が…。</strong><br>診断結果は無情にも性病。治療には莫大な費用と時間が…。`;}
                 else if(gameState.insultOnlineCount>=iL){t="不合格…そして逮捕";msg=`<strong>予備試験にも落ち、度重なるネットでの誹謗中傷が仇となった…。</strong><br>「しろちゃん、署まで来てもらおうか」…人生、詰んだ。`;}
-                else if(gameState.pachinkoCount>=pL){t="不合格…そして借金地獄";msg=`<strong>予備試験にも落ち、パチンコで作った借金は雪だるま式に膨れ上がった。</strong><br>取り立ての電話は鳴り止まず、もはやまともな生活は送れない…。`;}
+                else if(gameState.pachinkoCount>=pL){t="不合格…そして借金地獄";msg=`<strong>予備試験にも落ち、パチンコで作った借金は雪だるま式に膨れ上がった。</strong><br>取り立ての電話は鳴り止まず、もはやまともな生活は送れない…。しろちゃんは自殺した。`;}
                 else if(gameState.studyActionCount>=sE&&s<pt){t="不合格…努力の果てに";msg=`<strong>予備試験不合格。あれだけ勉強したのに、結果は非情だった…。</strong><br>努力だけでは越えられない壁を痛感し、静かにペンを置いた。`;}
                 else{t="予備試験 不合格…";if(s<pt*0.6)msg=`<strong>残念ながら、夢は完全に潰えました…。</strong><br>厳しい現実は、無情にも打ちのめしました。`;else if(s<pt*0.88)msg=`<strong>あと一歩でしたが、不合格です。</strong><br>悔しい結果です。しかし何かを掴んだと信じたい…。`;else msg=`<strong>本当に、本当に、あと僅かの差で不合格…。</strong><br>天は味方しませんでした。合格の光はこぼれ落ちました。`;}}
             examResultTitle.textContent=t;examResultMesssage.innerHTML=msg;examCalcMsg.style.display='none';examActualResult.style.display='block';
@@ -979,7 +956,7 @@ const RANDOM_EVENTS = [
     closeQuizModalButton.addEventListener('click', () => {
         if (quizMainAreaElement.style.display === 'block' && 
             (!quizResultAreaElement.style.display || quizResultAreaElement.style.display === 'none')) {
-            LogHelper.add("デイリークイズを途中で終了しました。報酬はありません。");
+            LogHelper.add("デイリークイズを途中で終了しました。報酬はありません笑。");
         }
         finishQuizSession();
     });
