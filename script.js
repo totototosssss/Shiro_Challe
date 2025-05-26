@@ -1232,20 +1232,31 @@ const RANDOM_EVENTS = [
     });
     
     document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                if (modal.id === 'daily-quiz-modal' && modal.classList.contains('show')) {
-                    if (quizMainAreaElement.style.display === 'block' && 
-                        (!quizResultAreaElement.style.display || quizResultAreaElement.style.display === 'none')) {
-                        LogHelper.add("デイリークイズを途中で終了しました。");
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) { 
+                    
+                    console.log(`Backdrop clicked for modal: ${modal.id}. Current day: ${gameState.day}, Max days: ${maxDaysGlobal}`);
+    
+                    if (modal.id === 'exam-result-modal' && gameState.day > maxDaysGlobal) {
+                        console.log('Exam result modal backdrop click: Close action PREVENTED because game is over.');
+                        return; 
                     }
-                    finishQuizSession();
-                } else {
+    
+                    if (modal.id === 'daily-quiz-modal' && modal.classList.contains('show')) {
+                        console.log('Quiz modal backdrop click: Calling finishQuizSession.');
+                        if (quizMainAreaElement.style.display === 'block' && 
+                            (!quizResultAreaElement.style.display || quizResultAreaElement.style.display === 'none')) {
+                            LogHelper.add("デイリークイズが背景クリックにより途中で終了されました。");
+                        }
+                        finishQuizSession(); 
+                        return; 
+                    }
+                    
+                    console.log(`Modal backdrop click: Closing modal ${modal.id} (default action).`);
                     modal.classList.remove('show');
                 }
-            }
+            });
         });
-    });
 
     quizNextQuestionBtn.addEventListener('click', () => {
         currentQuizQuestionIndex++;
