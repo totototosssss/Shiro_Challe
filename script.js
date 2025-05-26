@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         shiroHappyImage: 'shiro_happy.png',
         shiroSadImage: 'shiro_sad.png',
         shiroEndedImage: 'shiro_ended.png',
+        hiroLungCancerImage: 'shiro_lung_cancer.png',
         logMessage: '', 
         inventory: [],
         permanentBuffs: {},
@@ -92,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     triggerImmediateGameOver({
                         title: "肺の影-ヤニカスエンド",
                         message: "長年の喫煙がたたり、肺はボロボロになっていた。激しい咳と息切れで、もはや勉強どころではない。<br>肺がんを患いしろちゃんを天寿をまっとうした。",
-                        shiroImageSrc: gs.shiroSadImage || INITIAL_STATE_BASE.shiroSadImage
+                        shiroImageSrc: gs.shiroLungCancerImage || INITIAL_STATE_BASE.shiroLungCancerImage || gs.shiroSadImage 
                     });
                     return true; // アイテムは使用され、ゲームオーバー
                 }
