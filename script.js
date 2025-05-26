@@ -21,13 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameState = {};
 
     const ITEMS = {
-        'energy_drink_law': { name: '法力エナジードリンク改', price: 600, type: 'consumable_active', description: '使用: 体力+25、集中力+18。ただしストレス+8。', use: (gs, lh) => { gs.energy += 25; lh.add(`体力${formatChange(25)}。`); gs.focus += 18; lh.add(`集中力${formatChange(18)}。`); gs.stress += 8; lh.add(`代償としてストレスが${formatChange(8, "negative")}。`); return true; }},
+        'energy_drink_law': { name: 'エナジードリンク', price: 600, type: 'consumable_active', description: '使用: 体力+25、集中力+18。ただしストレス+8。', use: (gs, lh) => { gs.energy += 25; lh.add(`体力${formatChange(25)}。`); gs.focus += 18; lh.add(`集中力${formatChange(18)}。`); gs.stress += 8; lh.add(`代償としてストレスが${formatChange(8, "negative")}。`); return true; }},
         'omikuji': { name: '開運おみくじ', price: 150, type: 'consumable_active', description: '今日の運勢を占う。1日1回限定。', use: (gs, lh) => { if (gs.omikujiUsedToday) { lh.add("おみくじは本日既に引いています。"); showThought("今日はもう引いた…",1800,'neutral'); return false; } gs.omikujiUsedToday = true; const r=Math.random()*100; let rt="",lc=0,mc=0,sm="",st='neutral'; if(r<5){rt="【大吉】";lc=getRandomInt(30,45);mc=getRandomInt(10,20);sm="やったー！ツイてる！";st='success';} else if(r<20){rt="【中吉】";lc=getRandomInt(10,18);mc=getRandomInt(5,10);sm="おお、中吉！";st='success';} else if(r<50){rt="【小吉】";lc=getRandomInt(3,7);mc=getRandomInt(1,3);sm="小吉か。";st='neutral';} else if(r<75){rt="【吉】";lc=getRandomInt(1,2);mc=0;sm="吉。平穏が一番。";st='neutral';} else if(r<85){rt="【末吉】";lc=0;mc=getRandomInt(-2,0);sm="末吉…微妙。";st='neutral';} else if(r<95){rt="【凶】";lc=getRandomInt(-7,-3);mc=getRandomInt(-8,-4);sm="うわっ、凶だ…。";st='failure';} else{rt="【大凶】";lc=getRandomInt(-10,-8);mc=getRandomInt(-10,-8);sm="まさかの大凶…！";st='failure';} lh.add(`おみくじ結果 ${formatMessage(rt,st)}！`); if(lc!==0){gs.luck+=lc;lh.add(`合格運${formatChange(lc)}`);}else{lh.add(`合格運変化なし`);} if(mc!==0){gs.mental+=mc;lh.add(`精神力${formatChange(mc)}`);}else{lh.add(`精神力変化なし`);} showThought(sm,2300,st); return true; }},
         'luxury_soapland': { name: '行きつけのソープ', price: 65000, type: 'consumable_active', description: '究極癒やし。ストレス0,集中力MAX。資金も激減。', use: (gs, lh) => { gs.stress=0;lh.add(`ストレス完全消滅！`);gs.focus=100;lh.add(`集中力MAX！`);gs.soaplandUsedCount++;gs.money-=10000;lh.add(`追加料金で資金${formatChange(-10000,"negative")}`);showThought("全て忘れてリフレッシュ！",2500,'success');return true;}},
         'best_exercise_book':{name:'Sランク過去問集',price:7500,type:'permanent',description:'所有中、演習時の知識獲得+45%,集中力消費-20%。',permanentEffect:{exerciseKnowledgeBoost:0.45,exerciseFocusSave:0.20}},
         'intensive_lecture_ticket':{name:'短期集中講座受講証',price:3000,type:'consumable_active',description:'使用:知識+15,集中+20,精神+14,ストレス+8。次回勉強/演習効率1.7倍(1日)。',use:(gs,lh)=>{gs.knowledge+=15;lh.add(`法律知識${formatChange(15)}`);gs.focus+=20;lh.add(`集中力${formatChange(20)}`);gs.mental+=14;lh.add(`精神力${formatChange(14)}`);gs.stress+=8;lh.add(`講座負荷ストレス${formatChange(8,"negative")}`);const bt=Math.random()<0.5?'studyTextbookBoost':'studyExerciseBoost';const tn=bt==='studyTextbookBoost'?'基本書':'演習';gs.activeEffects[bt]={duration:2,value:1.7,displayName:`集中講座(${tn})`};lh.add(formatMessage(`集中講座(${tn})効果`,"item")+"を得た！");return true;}},
         'counseling_ticket':{name:'カウンセリング予約券',price:1800,type:'consumable_active',description:'使用:精神力+35、ストレス-40。専門家は頼りに。',use:(gs,lh)=>{gs.mental+=35;lh.add(`精神力${formatChange(35)}`);gs.stress-=40;lh.add(`ストレス${formatChange(-40)}`);return true;}},
-        'noise_cancelling_earphones':{name:'高級NCイヤホン',price:5000,type:'permanent',description:'所有中、勉強時集中力低下-40%。ストレス自然増を微軽減。',permanentEffect:{focusRetentionBoost:0.40,dailyStressResist:1}},
+        'noise_cancelling_earphones':{name:'高級ノイズキャンセリングイヤホン',price:5000,type:'permanent',description:'所有中、勉強時集中力低下-40%。ストレス自然増を微軽減。',permanentEffect:{focusRetentionBoost:0.40,dailyStressResist:1}},
         'small_lucky_charm':{name:'小さな交通安全お守り',price:1000,type:'permanent',description:'所有中、合格運+10(初期)、毎日運気が少し上がる気が。',permanentEffect:{luck:10,dailyLuckIncrease:2.5}}
     };
 
@@ -502,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function disableActions() { 
         actionButtonsCurrentlyDisabled = true;
         actionButtonsNodeList.forEach(b => b.disabled = true); 
-        if (openDailyQuizButton) openDailyQuizButton.disabled = true; // クイズボタンも無効化
+        if (openDailyQuizButton) openDailyQuizButton.disabled = true;
     }
     function enableActions() { 
         actionButtonsCurrentlyDisabled = false;
@@ -574,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         (!quizResultAreaElement.style.display || quizResultAreaElement.style.display === 'none')) {
                         LogHelper.add("デイリークイズを途中で終了しました。");
                     }
-                    finishQuizSession(); // どの道クイズは終了扱い
+                    finishQuizSession();
                 } else {
                     modal.classList.remove('show');
                 }
@@ -611,7 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gameContainer.classList.add('hidden');
         difficultyScreen.style.display = 'flex';
         difficultyScreen.classList.remove('hidden');
-        console.log("しろちゃん 予備試験ガチモード - v8 (JS再々出力)");
+        console.log("しろちゃん 予備試験ガチモード");
     }
 
     gameStartInit();
