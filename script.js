@@ -309,9 +309,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 lh.add(formatMessage(adviceMsg, "neutral"));
                 
-                return true; // アイテム使用成功
+                return true;
             }
-        }
+        },
         'ambulance_call': {
             name: '救急車',
             price: 0,
