@@ -481,8 +481,102 @@ const RANDOM_EVENTS = [
     function applyActiveEffectsEndOfDay(){let msg="";for(const k in gameState.activeEffects){gameState.activeEffects[k].duration--;if(gameState.activeEffects[k].duration<=0){msg+=`${formatMessage(gameState.activeEffects[k].displayName,"item")}効果終了。<br>`;delete gameState.activeEffects[k];}}if(msg)LogHelper.addRaw(msg);}
     function triggerRandomEvent(){eventNotificationArea.style.display='none';if(Math.random()<RANDOM_EVENT_CHANCE){const e=RANDOM_EVENTS[getRandomInt(0,RANDOM_EVENTS.length-1)];eventMessageElem.innerHTML=`<strong>イベント発生！</strong> ${e.msg}`;eventNotificationArea.style.display='block';gameContainer.classList.add('event-flash-highlight');setTimeout(()=>gameContainer.classList.remove('event-flash-highlight'),1500);e.effect(gameState);LogHelper.addRaw(`<div class="log-event-highlight"><strong>ランダムイベント:${e.name}</strong><br>${e.msg}</div>`);showThought(`「${e.name}」発生！`,3200,'neutral');return true;}return false;}
     
-    function studyTextbook(){gameState.studyActionCount++;LogHelper.add("<strong><i class='fas fa-book-open'></i> 基本書を読み知識を詰めた。</strong>");let kGB=getRandom(3,7),kM=1.0;const b=gameState.activeEffects.studyTextbookBoost;if(b?.duration>0){kM*=b.value;LogHelper.add(`${formatMessage(b.displayName,"item")}効率UP！`);}let kG=calculateChange(kGB,[{p:gameState.focus,v:0.85},{p:gameState.mental,v:0.25}],[{p:gameState.stress,v:0.85},{p:(100-gameState.energy),v:0.75}],kM);kG=Math.max(0,Math.round(kG));gameState.knowledge+=kG;LogHelper.add(kG>0?`法律知識${formatChange(kG)}。`:`全く頭に入らず…。`);gameState.energy-=Math.round(calculateChange(30,[],[],1,true));gameState.stress+=Math.round(calculateChange(15,[{p:(100-gameState.mental),v:0.65}]));let fD=getRandomInt(22,32);if(gameState.permanentBuffs.focusRetentionBoost)fD*=(1-gameState.permanentBuffs.focusRetentionBoost);gameState.focus-=Math.round(fD);gameState.mental-=getRandomInt(4,8);if(gameState.energy<10)showThought("もう限界…",1800,'failure');else if(gameState.focus<5)showThought("目がかすむ…",1800,'failure');}
-    function doExercise(){gameState.studyActionCount++;LogHelper.add("<strong><i class='fas fa-pencil-alt'></i> 過去問・演習書と格闘。</strong>");let kGB=getRandom(2,8),kM=1.0;if(gameState.permanentBuffs.exerciseKnowledgeBoost)kM+=gameState.permanentBuffs.exerciseKnowledgeBoost;const b=gameState.activeEffects.studyExerciseBoost;if(b?.duration>0){kM*=b.value;LogHelper.add(`${formatMessage(b.displayName,"item")}効率UP！`);}let kG=calculateChange(kGB,[{p:gameState.focus,v:0.9},{p:gameState.knowledge,v:0.10}],[{p:gameState.stress,v:0.75},{p:(100-gameState.energy),v:0.75}],kM);kG=Math.max(0,Math.round(kG));gameState.knowledge+=kG;LogHelper.add(kG>0?`実践知識${formatChange(kG)}。`:`問題解けず…。`);let fC=getRandomInt(28,40);if(gameState.permanentBuffs.exerciseFocusSave)fC*=(1-gameState.permanentBuffs.exerciseFocusSave);gameState.focus-=Math.round(fC);gameState.energy-=Math.round(calculateChange(38,[],[],1,true));gameState.stress+=Math.round(calculateChange(20,[{p:(100-gameState.mental),v:0.55}]));gameState.mental-=getRandomInt(6,12);if(gameState.focus<5)showThought("頭が停止…",1800,'failure');}
+    function studyTextbook() {
+        gameState.studyActionCount++; 
+        LogHelper.add("<strong><i class='fas fa-book-open'></i> 基本書を読み知識を詰めた。</strong>");
+        
+        let kGainBase = getRandom(3, 7);
+        let knowledgeMultiplier = 1.0;
+
+        const quizBonus = gameState.activeEffects.quizMasteryBonus;
+        if (quizBonus?.duration > 0 && quizBonus.type === 'genericLearningBoost' && 
+            quizBonus.boostKey === 'studyTextbookBoost') {
+            knowledgeMultiplier *= quizBonus.value;
+            LogHelper.add(`${formatMessage(quizBonus.displayName, "item")}により学習効率が更にUP！`);
+        }
+
+        const itemBoost = gameState.activeEffects.studyTextbookBoost;
+        if (itemBoost?.duration > 0) {
+            knowledgeMultiplier *= itemBoost.value; 
+            LogHelper.add(`${formatMessage(itemBoost.displayName, "item")}により効率UP！`);
+        }
+        
+        let kGain = calculateChange(
+            kGainBase, 
+            [{p:gameState.focus, v:0.85}, {p:gameState.mental, v:0.25}],
+            [{p:gameState.stress,v:0.85}, {p:(100-gameState.energy), v:0.75}], 
+            knowledgeMultiplier
+        );
+        kGain = Math.max(0, Math.round(kGain)); 
+        gameState.knowledge += kGain; 
+        LogHelper.add(kGain > 0 ? `法律知識が${formatChange(kGain)}。` : `全く頭に入らなかった…。`);
+        
+        gameState.energy -= Math.round(calculateChange(30,[],[],1,true)); 
+        gameState.stress += Math.round(calculateChange(15,[{p:(100-gameState.mental),v:0.65}]));
+        
+        let focusDrain = getRandomInt(22,32); 
+        if (gameState.permanentBuffs.focusRetentionBoost) {
+            focusDrain *= (1 - gameState.permanentBuffs.focusRetentionBoost);
+        }
+        gameState.focus -= Math.round(focusDrain); 
+        gameState.mental -= getRandomInt(4,8);
+
+        if (gameState.energy < 10) {
+            showThought("もう限界だ…", 1800, 'failure');
+        } else if (gameState.focus < 5) {
+            showThought("目がかすむ…", 1800, 'failure');
+        }
+    }
+
+    function doExercise() {
+        gameState.studyActionCount++;
+        LogHelper.add("<strong><i class='fas fa-pencil-alt'></i> 過去問・演習書と格闘。</strong>");
+        
+        let kGainBase = getRandom(2,8);
+        let knowledgeMultiplier = 1.0;
+
+        if (gameState.permanentBuffs.exerciseKnowledgeBoost) {
+            knowledgeMultiplier += gameState.permanentBuffs.exerciseKnowledgeBoost;
+        }
+
+        const quizBonus = gameState.activeEffects.quizMasteryBonus;
+        if (quizBonus?.duration > 0 && quizBonus.type === 'genericLearningBoost' &&
+            quizBonus.boostKey === 'studyExerciseBoost') {
+            knowledgeMultiplier *= quizBonus.value;
+            LogHelper.add(`${formatMessage(quizBonus.displayName, "item")}により演習効率が更にUP！`);
+        }
+        
+        const itemBoost = gameState.activeEffects.studyExerciseBoost;
+        if (itemBoost?.duration > 0) { 
+            knowledgeMultiplier *= itemBoost.value; 
+            LogHelper.add(`${formatMessage(itemBoost.displayName,"item")}により効率UP！`);
+        }
+        
+        let kGain = calculateChange(
+            kGainBase, 
+            [{p:gameState.focus,v:0.9},{p:gameState.knowledge,v:0.10}],
+            [{p:gameState.stress,v:0.75},{p:(100-gameState.energy),v:0.75}],
+            knowledgeMultiplier
+        );
+        kGain = Math.max(0, Math.round(kGain)); 
+        gameState.knowledge += kGain; 
+        LogHelper.add(kGain > 0 ? `実践的な法律知識が${formatChange(kGain)}。` : `問題が全く解けなかった…。`);
+        
+        let focusConsumption = getRandomInt(28,40); 
+        if (gameState.permanentBuffs.exerciseFocusSave) {
+            focusConsumption *= (1 - gameState.permanentBuffs.exerciseFocusSave);
+        }
+        gameState.focus -= Math.round(focusConsumption); 
+        gameState.energy -= Math.round(calculateChange(38,[],[],1,true)); 
+        gameState.stress += Math.round(calculateChange(20,[{p:(100-gameState.mental),v:0.55}])); 
+        gameState.mental -= getRandomInt(6,12);
+
+        if (gameState.focus < 5) {
+            showThought("頭が停止した…", 1800, 'failure');
+        }
+    }
+    
+    
     function work(){LogHelper.add("<strong><i class='fas fa-briefcase'></i> 短期バイトに励んだ。</strong>");if(gameState.energy<40){LogHelper.add(formatMessage("疲労困憊、仕事にならず…。","negative"));showThought("体が重い…",1800,'failure');gameState.money+=getRandomInt(200,500);gameState.energy-=getRandomInt(25,40);}else{let e=calculateChange(getRandom(800,2200),[{p:gameState.focus,v:0.03}]);e=Math.round(e);gameState.money+=e;LogHelper.add(`働いて${formatMessage("+"+e,"positive")}円得た。`);showThought("これで少しは…。",1800,'neutral');}gameState.energy-=Math.round(calculateChange(55,[],[],1,true));gameState.stress+=getRandomInt(10,24);gameState.focus-=getRandomInt(9,18);gameState.mental-=getRandomInt(2,4);}
     function insultOnline(){gameState.insultOnlineCount++;LogHelper.add("<strong><i class='fas fa-keyboard'></i> オプチャで他人を罵倒。</strong>");const t=["にゃま","なんく","ささみ"][getRandomInt(0,2)];gameState.energy-=getRandomInt(6,14);if(Math.random()<0.8){let sr=getRandom(30,50);gameState.stress-=Math.round(sr);let mb=getRandomInt(6,12);gameState.mental+=mb;let fb=getRandomInt(4,9);gameState.focus+=fb;gameState.luck-=getRandomInt(18,28);LogHelper.add(`${t}を完膚なきまでに言い負かし気分爽快！ストレス${formatChange(-Math.round(sr))}、精神力${formatChange(mb)}、集中力${formatChange(fb)}。`);LogHelper.add(`しかし合格運著しく低下(${formatChange(getRandomInt(-28,-18),"negative")})。`);showThought("一瞬スッキリ！",2000,'success');}else{let si=getRandomInt(20,30);gameState.stress+=si;let md=getRandomInt(25,35);gameState.mental-=md;gameState.luck-=getRandomInt(10,16);gameState.focus-=getRandomInt(12,20);LogHelper.add(`${t}への悪態不発、逆に言い返された…。ストレス${formatChange(si,"negative")}、精神力${formatChange(-md,"negative")}。`);LogHelper.add(`集中力も散漫(${formatChange(getRandomInt(-20,-12),"negative")})、合格運も低下(${formatChange(getRandomInt(-16,-10),"negative")})。`);showThought("最悪だ…疲れた…。",2200,'failure');}}
     function pachinko(){gameState.pachinkoCount++;LogHelper.add("<strong><i class='fas fa-slot-machine'></i> 誘惑に負けパチンコへ…。</strong>");let c=Math.min(gameState.money,Math.max(1000,Math.round(gameState.money*0.20)));if(gameState.money<1000){LogHelper.add(formatMessage("資金1000円未満では遊べない。","negative"));showThought("娯楽は金持ちの道楽か…。",1800,'failure');gameState.stress+=8;}else{gameState.money-=c;LogHelper.add(`${c}円握りしめ一攫千金を夢見た。`);gameState.energy-=Math.round(calculateChange(25,[],[],1,true));let wc=clamp(0.15+(gameState.luck/450)-(gameState.stress/550)+(gameState.mental/650),0.01,0.30);if(Math.random()<wc){const w=Math.round(c*(getRandom(1,6)+getRandom(1,6)));gameState.money+=w;LogHelper.add(`信じられない幸運！${formatMessage("+"+w,"positive")}円獲得！`);gameState.stress-=getRandomInt(15,25);gameState.mental+=getRandomInt(7,13);gameState.luck+=getRandomInt(1,2);showThought("今日だけはツイてる！",1800,'success');}else{LogHelper.add(formatMessage("やはり現実は厳しかった…参加費全損。","negative"));gameState.stress+=getRandomInt(22,32);gameState.mental-=getRandomInt(15,22);gameState.luck-=getRandomInt(3,7);showThought("時間と金の無駄…。",2000,'failure');}}}
