@@ -627,13 +627,43 @@ const RANDOM_EVENTS = [
         itemShopListElem.innerHTML = '';
         shopMoneyDisplay.textContent = Math.round(gameState.money);
         for (const id in ITEMS) {
-            const item = ITEMS[id]; const card = document.createElement('div'); card.className = 'item-card';
-            const ownPerm = item.type==='permanent' && gameState.inventory.find(i=>i.id===id);
-            const afford = gameState.money >= item.price;
-            card.innerHTML = `<h4><i class="fas fa-star"></i> ${item.name}</h4><p>${item.description}</p><p class="item-price"><i class="fas fa-coins"></i> ${item.price}円</p><button class="button-primary buy-item-button" data-item-id="${id}" ${!afford||ownPerm?'disabled':''}> <i class="fas fa-shopping-cart"></i> ${ownPerm?'購入済':'購入'}</button>`;
+            const item = ITEMS[id];
+            const card = document.createElement('div');
+            card.className = 'item-card';
+
+            let isButtonDisabled = false;
+            let buttonText = "購入";
+            const canAfford = gameState.money >= item.price;
+
+            if (!canAfford) {
+                isButtonDisabled = true;
+            }
+
+            if (item.type === 'permanent' && gameState.inventory.find(inv => inv.id === id)) {
+                isButtonDisabled = true;
+                buttonText = "購入済";
+            }
+            
+            if (id === 'ritsumeikan_pamphlet' && gameState.ritsumeikanPamphletEffectGained) {
+                isButtonDisabled = true;
+                buttonText = "効果獲得済";
+            }
+
+            card.innerHTML = `
+                <h4><i class="fas fa-star"></i> ${item.name}</h4>
+                <p>${item.description}</p>
+                <p class="item-price"><i class="fas fa-coins"></i> ${item.price}円</p>
+                <button class="button-primary buy-item-button" 
+                        data-item-id="${id}" 
+                        ${isButtonDisabled ? 'disabled' : ''}>
+                    <i class="fas fa-shopping-cart"></i> ${buttonText}
+                </button>
+            `;
             itemShopListElem.appendChild(card);
         }
-        document.querySelectorAll('.buy-item-button').forEach(b=>b.addEventListener('click',()=>buyItem(b.dataset.itemId)));
+        document.querySelectorAll('.buy-item-button').forEach(button => 
+            button.addEventListener('click', () => buyItem(button.dataset.itemId))
+        );
     }
     function buyItem(itemId){
         const itemDef=ITEMS[itemId];if(!itemDef)return;
