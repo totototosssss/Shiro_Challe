@@ -144,9 +144,14 @@ body {
     margin-bottom: var(--spacing-xs);
 }
 .difficulty-subtitle {
-    font-family: var(--font-accent); font-weight: 500; font-size: 0.95em;
-    color: var(--text-medium); display: block; margin-bottom: var(--spacing-lg);
-    letter-spacing: 0.2px;
+    font-family: var(--font-ui-quiz);
+    font-weight: 500;
+    font-size: 0.85em; 
+    color: var(--text-medium); 
+    display: block;
+    margin-bottom: var(--spacing-lg);
+    letter-spacing: 0.3px;
+    opacity: 0.9;
 }
 #difficulty-selection-screen h2 {
     font-family: var(--font-accent); font-weight: 700; font-size: 1.5em;
@@ -202,9 +207,15 @@ body {
     color: var(--color-primary); letter-spacing: 0.5px; line-height: 1.2;
 }
 .game-subtitle {
-    font-family: var(--font-accent); font-weight: 500; font-size: 0.9em;
-    color: var(--text-medium); display: block; margin-top: var(--spacing-xs);
-    letter-spacing: 0.2px;
+    font-family: var(--font-ui-quiz); 
+    font-weight: 500;
+    font-size: 0.75em; 
+    color: var(--color-secondary); 
+    display: block;
+    margin-top: calc(var(--spacing-xs) * 0.5); 
+    letter-spacing: 0.5px;     
+    text-transform: uppercase;  
+    opacity: 0.85;               
 }
 .header-info-bar {
     display: flex; flex-wrap: wrap; justify-content: space-between;
