@@ -948,7 +948,8 @@ const RANDOM_EVENTS = [
             rank = 's'; rankTitle = "全問正解！天才！"; 
             moneyChange = 400;
             energyChange = 10;
-            
+            gameState.luck = clamp(gameState.luck + 10, 0, 100);
+            LogHelper.addRaw(`全問正解の祝福が舞い降りた！合格運が${formatChange(10,"positive")}。<br>`);
             const effectKey = 'quizMasteryBonus'; 
             const effectDisplayName = 'クイズ全問正解ボーナス';
             const targetActionBoost = Math.random() < 0.5 ? 'studyTextbookBoost' : 'studyExerciseBoost';
@@ -992,7 +993,7 @@ const RANDOM_EVENTS = [
 
         quizResultIconContainer.className = `quiz-result-icon-container rank-${rank}`;
         let iconColorVar = '--quiz-color-wrong';
-        if (currentQuizScore === 3) iconColorVar = '--quiz-color-correct'; // 全問正解
+        if (currentQuizScore === 3) iconColorVar = '--quiz-color-correct'; 
         else if (currentQuizScore === 2) iconColorVar = '--quiz-color-accent-primary'; // 2問正解
         else if (currentQuizScore === 1) iconColorVar = '--quiz-color-accent-secondary'; // 1問正解
         quizResultIconContainer.innerHTML = `<i class="${iconClass}" style="color: var(${iconColorVar});"></i>`;
@@ -1036,9 +1037,8 @@ const RANDOM_EVENTS = [
         gameState.quizAttemptedToday = true;
         
         LogHelper.add(`--- デイリークイズ結果 ---`);
-        // showQuizResults で gameState は更新されているので、それに基づいてログを生成
         if (currentQuizScore === 3) {
-            LogHelper.add(`全問正解！${formatChange(400, "positive")}円と体力${formatChange(10)}を獲得！さらに次回学習効率UP！`);
+            LogHelper.add(`全問正解！${formatChange(400, "positive")}円と体力${formatChange(10)}を獲得！さらに次回学習効率と運UP！`);
         } else if (currentQuizScore === 2) {
             LogHelper.add(`2問正解！${formatChange(200, "positive")}円獲得！`);
         } else if (currentQuizScore === 1) {
@@ -1075,7 +1075,7 @@ const RANDOM_EVENTS = [
         gameState.focus -= getRandomInt(0, 2);
 
         if (gameState.cigarettesSmokedCount > 0) {
-            const addictionPenalty = gameState.cigarettesSmokedCount * 1; // 1本あたり各-1 (合計-2*本数)
+            const addictionPenalty = gameState.cigarettesSmokedCount * 1;
             gameState.energy = clamp(gameState.energy - addictionPenalty, 0, 100 + (gameState.permanentBuffs.maxEnergyBoost || 0));
             gameState.focus = clamp(gameState.focus - addictionPenalty, 0, 100);
             LogHelper.addRaw(formatMessage(`タバコの中毒症状で体力と集中力が低下した(${formatChange(-addictionPenalty)} لكل منهما)。<br>`, "negative"));
