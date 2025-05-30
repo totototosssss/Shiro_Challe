@@ -1058,9 +1058,12 @@ const RANDOM_EVENTS = [
         gameState.quizAttemptedToday = false; 
         gameState.day++;
         applyActiveEffectsEndOfDay();
-        if (gameState.permanentBuffs.dailyLuckIncrease) {
-            gameState.luck += gameState.permanentBuffs.dailyLuckIncrease;
-            LogHelper.addRaw(`${formatMessage("お守り","item")}から微かな加護(合格運${formatChange(gameState.permanentBuffs.dailyLuckIncrease,"positive")})。<br>`);
+        const charmDef = ITEMS['small_lucky_charm'];
+        if (gameState.inventory.find(item => item.id === 'small_lucky_charm')) {
+            const charmEffect = charmDef.getPermanentEffect();
+            const dailyLuck = charmEffect.dailyLuckIncrease || 0;
+            gameState.luck += dailyLuck;
+            LogHelper.addRaw(`${formatMessage("お守り","item")}から微かな加護(合格運${formatChange(dailyLuck,"positive")})。<br>`);
         } else { 
             gameState.luck += getRandomInt(-2, -1);
         }
