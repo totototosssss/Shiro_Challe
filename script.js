@@ -824,7 +824,7 @@ const RANDOM_EVENTS = [
     
             // --- 「ささみ」エンディング分岐 ---
             if (target === "ささみ") {
-                if (Math.random() < 0.5) {
+                if (Math.random() < 0.75) {
                     LogHelper.addRaw(`<div class="log-event-highlight"><strong>致命的な挑発:</strong> ${target}を本気で怒らせてしまったようだ…！</div>`);
                     LogHelper.commitCurrentTurnToGameState(`--- ${gameState.day}日目の行動 ---`);
                     LogHelper.renderFullLog();
